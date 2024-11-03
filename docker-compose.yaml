@@ -1,0 +1,14 @@
+services:
+  crocus:
+    build:
+      context: ./
+      network: host
+    environment:
+      - "CROCUS__SERVER__HOST=${CROCUS__SERVER__HOST:-0.0.0.0}"
+      - "CROCUS__SERVER__PORT=${CROCUS__SERVER__PORT:-20020}"
+      - "CROCUS__SECRETS__SHARED=${CROCUS__SECRETS__SHARED:-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX}"
+      - "CROCUS__SCORPION__ADMIN__SCHEME=${CROCUS__SCORPION__ADMIN__SCHEME:-http}"
+      - "CROCUS__SCORPION__ADMIN__HOST=${CROCUS__SCORPION__ADMIN__HOST:-localhost}"
+      - "CROCUS__SCORPION__ADMIN__PORT=${CROCUS__SCORPION__ADMIN__PORT:-20001}"
+      - "CROCUS__SCORPION__ADMIN__PATH=${CROCUS__SCORPION__ADMIN__PATH:-}"
+    network_mode: host
