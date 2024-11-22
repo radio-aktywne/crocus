@@ -1,37 +1,49 @@
-import { Stack, Text, Title } from "@mantine/core";
-import { labels } from "../../config/labels";
+import { i18n } from "@lingui/core";
+import { msg, t } from "@lingui/macro";
+import { Metadata } from "next";
 
-export type FlowErrorPageSearchParams = Readonly<{
-  error?: string;
-  error_description?: string;
-  error_hint?: string;
-  error_debug?: string;
-}>;
+import { ErrorPageMetadata } from "../../components/metadata/error/error-page-metadata";
+import { ErrorPageView } from "../../components/views/error/error-page-view";
+import { getLanguage } from "../../lib/i18n/get-language";
+import { loadLocale } from "../../lib/i18n/load-locale";
+import { parseQueryParams } from "../../lib/urls/parse-query-params";
+import { searchParamsSchema } from "./schemas";
+import { ErrorPageInput } from "./types";
 
-export type FlowErrorPageProps = Readonly<{
-  searchParams: FlowErrorPageSearchParams;
-}>;
+export async function generateMetadata(): Promise<Metadata> {
+  const { language } = getLanguage();
+  await loadLocale({ i18n, language });
 
-export const dynamic = "force-dynamic";
+  return {
+    description: t(i18n)(msg({ message: "crocus" })),
+    title: t(i18n)(msg({ message: "Error • crocus" })),
+  };
+}
 
-export default async function FlowErrorPage({
-  searchParams,
-}: FlowErrorPageProps) {
+export default function ErrorPage({ searchParams }: ErrorPageInput) {
+  const { data: params, error: paramsError } = parseQueryParams({
+    params: new URLSearchParams(searchParams),
+    schema: searchParamsSchema,
+  });
+
+  if (paramsError) throw new Error("Invalid query parameters");
+
   const {
     error,
+    error_debug: debug,
     error_description: description,
     error_hint: hint,
-    error_debug: debug,
-  } = searchParams;
-
-  if (!error) throw new Error("Missing error query parameter.");
+  } = params;
 
   return (
-    <Stack align="center">
-      <Title>{labels.pages.flowError.text}</Title>
-      {description && <Text>{description}</Text>}
-      {hint && <Text>{hint}</Text>}
-      {debug && <Text c="dimmed">{debug}</Text>}
-    </Stack>
+    <>
+      <ErrorPageMetadata />
+      <ErrorPageView
+        debug={debug}
+        description={description}
+        error={error}
+        hint={hint}
+      />
+    </>
   );
 }

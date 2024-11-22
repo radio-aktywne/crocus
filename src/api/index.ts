@@ -1,1 +1,0 @@
-export { scorpion } from "./scorpion";
