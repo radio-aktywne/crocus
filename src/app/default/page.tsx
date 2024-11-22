@@ -1,5 +1,7 @@
 import { IconMoodSmile } from "@tabler/icons-react";
 
-export default async function DefaultPage() {
+import { DefaultPageInput } from "./types";
+
+export default function DefaultPage({}: DefaultPageInput) {
   return <IconMoodSmile />;
 }
