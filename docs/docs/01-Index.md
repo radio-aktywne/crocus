@@ -5,7 +5,7 @@ title: Index
 
 # crocus
 
-OIDC auth app 🪪
+Users OIDC auth app 🪪
 
 ## 💡 About
 

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-OIDC auth app 🪪
+Users OIDC auth app 🪪
 
 [![Lint](https://github.com/radio-aktywne/crocus/actions/workflows/lint.yaml/badge.svg)](https://github.com/radio-aktywne/crocus/actions/workflows/lint.yaml)
 [![Image](https://github.com/radio-aktywne/crocus/actions/workflows/image.yaml/badge.svg)](https://github.com/radio-aktywne/crocus/actions/workflows/image.yaml)
