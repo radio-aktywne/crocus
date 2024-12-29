@@ -3,7 +3,7 @@ _commit: 0.4.0
 _src_path: gh:radio-aktywne/template-app-next
 accountname: radio-aktywne
 appname: crocus
-description: OIDC auth app 🪪
+description: Users OIDC auth app 🪪
 docs: true
 docsurl: https://radio-aktywne.github.io/crocus
 envprefix: CROCUS
