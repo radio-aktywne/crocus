@@ -779,7 +779,7 @@ export type components = {
   requestBodies: never;
   responses: {
     /** @description Empty responses are sent when, for example, resources are deleted. The HTTP status code for empty responses is
-     *     typically 201. */
+     *     typically 204. */
     emptyResponse: {
       content?: never;
       headers: {
@@ -994,6 +994,7 @@ export type components = {
        */
       status?: string;
     };
+    /** The health status of the service. */
     healthStatus: {
       /** @description Status always contains "ok". */
       status?: string;
@@ -2769,9 +2770,9 @@ export type operations = {
       header?: never;
       path?: never;
       query?: {
-        /** @description OAuth 2.0 Subject
+        /** @description Login Session ID
          *
-         *     The subject to revoke authentication sessions for. */
+         *     The login session to revoke. */
         sid?: string;
         /** @description OAuth 2.0 Subject
          *
