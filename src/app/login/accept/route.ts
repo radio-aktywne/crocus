@@ -11,8 +11,9 @@ import { LoginRequestGoneError } from "../../../lib/scorpion/login/errors";
 import { getLoginRequest } from "../../../lib/scorpion/login/get-login-request";
 import { createErrorPath } from "../../../lib/urls/create-error-path";
 import { parseQueryParams } from "../../../lib/urls/parse-query-params";
-import { errors } from "./constants";
+import { errors, sessionAge } from "./constants";
 import { searchParamsSchema } from "./schemas";
+import { getDurationInSeconds } from "./utils";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data: params, error: paramsError } = parseQueryParams({
@@ -45,6 +46,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       context: {
         subject: subject,
       },
+      remember: true,
+      remember_for: getDurationInSeconds(sessionAge),
       subject: subject,
     });
 

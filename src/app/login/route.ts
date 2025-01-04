@@ -37,6 +37,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     if (loginRequest.skip) {
       const { redirect: url } = await acceptLoginRequest({
         challenge: loginRequest.challenge,
+        extend_session_lifespan: true,
         subject: loginRequest.subject,
       });
 

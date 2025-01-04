@@ -1,3 +1,5 @@
+import dayjs from "../../dayjs";
+
 export function createIdToken(context: unknown) {
   const ctx = context instanceof Object ? context : {};
   return {
@@ -6,4 +8,8 @@ export function createIdToken(context: unknown) {
         ? ctx.subject
         : undefined,
   };
+}
+
+export function getDurationInSeconds(duration: string) {
+  return dayjs.duration(duration).asSeconds();
 }

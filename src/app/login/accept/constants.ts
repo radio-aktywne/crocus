@@ -12,3 +12,5 @@ export const errors = {
     hint: "Invalid token for login accept handler",
   },
 };
+
+export const sessionAge = "P30D";
