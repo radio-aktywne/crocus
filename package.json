@@ -19,6 +19,7 @@
     "@mantine/notifications": "^7.13.5",
     "@tabler/icons-react": "~3.17.0",
     "client-only": "^0.0.1",
+    "dayjs": "^1.11.13",
     "immer": "^10.1.1",
     "jose": "^5.9.6",
     "next": "14.2.17",

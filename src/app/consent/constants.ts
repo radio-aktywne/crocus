@@ -8,3 +8,5 @@ export const errors = {
     hint: "An unexpected error occurred",
   },
 };
+
+export const sessionAge = "P30D";

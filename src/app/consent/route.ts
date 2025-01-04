@@ -7,9 +7,9 @@ import { getConsentRequest } from "../../lib/scorpion/consent/get-consent-reques
 import { ScorpionError } from "../../lib/scorpion/errors";
 import { createErrorPath } from "../../lib/urls/create-error-path";
 import { parseQueryParams } from "../../lib/urls/parse-query-params";
-import { errors } from "./constants";
+import { errors, sessionAge } from "./constants";
 import { searchParamsSchema } from "./schemas";
-import { createIdToken } from "./utils";
+import { createIdToken, getDurationInSeconds } from "./utils";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data: params, error: paramsError } = parseQueryParams({
@@ -49,6 +49,8 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       grant_access_token_audience:
         consentRequest.requested_access_token_audience,
       grant_scope: consentRequest.requested_scope,
+      remember: true,
+      remember_for: getDurationInSeconds(sessionAge),
       session: {
         id_token: createIdToken(consentRequest.context),
       },
