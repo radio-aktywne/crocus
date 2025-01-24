@@ -1,16 +1,13 @@
 import { redirect } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
-import { encryptAuthRequest } from "../../lib/auth/encrypt-auth-request";
-import { ScorpionError } from "../../lib/scorpion/errors";
-import { acceptLoginRequest } from "../../lib/scorpion/login/accept-login-request";
-import { LoginRequestGoneError } from "../../lib/scorpion/login/errors";
-import { getLoginRequest } from "../../lib/scorpion/login/get-login-request";
+import { encryptAuthLoginRequest } from "../../lib/auth/login/encrypt-auth-login-request";
 import { createErrorPath } from "../../lib/urls/create-error-path";
-import { createLoginAuthPath } from "../../lib/urls/create-login-auth-path";
+import { createOrchidAuthLoginURL } from "../../lib/urls/create-orchid-auth-login-url";
 import { parseQueryParams } from "../../lib/urls/parse-query-params";
 import { errors } from "./constants";
 import { searchParamsSchema } from "./schemas";
+import { safeAcceptLoginRequest, safeGetLoginRequest } from "./utils";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data: params, error: paramsError } = parseQueryParams({
@@ -29,40 +26,23 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { login_challenge: challenge } = params;
 
-  try {
-    const { request: loginRequest } = await getLoginRequest({
-      challenge: challenge,
-    });
+  const { request: loginRequest } = await safeGetLoginRequest({
+    challenge: challenge,
+  });
 
-    if (loginRequest.skip) {
-      const { redirect: url } = await acceptLoginRequest({
-        challenge: loginRequest.challenge,
-        extend_session_lifespan: true,
-        subject: loginRequest.subject,
-      });
-
-      redirect(url);
-    }
-
-    const { data: token } = await encryptAuthRequest({
+  if (loginRequest.skip) {
+    const { redirect: url } = await safeAcceptLoginRequest({
       challenge: loginRequest.challenge,
+      extend_session_lifespan: true,
+      subject: loginRequest.subject,
     });
 
-    const { path } = createLoginAuthPath({ token: token });
-
-    redirect(path);
-  } catch (error) {
-    if (error instanceof LoginRequestGoneError) redirect(error.redirect);
-
-    if (error instanceof ScorpionError) {
-      const { path } = createErrorPath({
-        description: errors.system.description,
-        hint: errors.system.hint,
-      });
-
-      redirect(path);
-    }
-
-    throw error;
+    redirect(url);
   }
+
+  const { data: token } = await encryptAuthLoginRequest({
+    challenge: loginRequest.challenge,
+  });
+  const { url } = createOrchidAuthLoginURL({ token });
+  redirect(url);
 }

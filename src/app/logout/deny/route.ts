@@ -3,13 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createErrorPath } from "../../../lib/urls/create-error-path";
 import { parseQueryParams } from "../../../lib/urls/parse-query-params";
-import { errors, sessionAge } from "./constants";
+import { errors } from "./constants";
 import { searchParamsSchema } from "./schemas";
 import {
-  getDurationInSeconds,
-  safeAcceptLoginRequest,
-  safeDecryptAuthLoginAcceptResponse,
-  safeGetLoginRequest,
+  safeDecryptAuthLogoutDenyResponse,
+  safeGetLogoutRequest,
+  safeRejectLogoutRequest,
 } from "./utils";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -29,23 +28,17 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { token } = params;
 
-  const { challenge, subject } = await safeDecryptAuthLoginAcceptResponse({
+  const { challenge } = await safeDecryptAuthLogoutDenyResponse({
     data: token,
   });
 
-  const { request: loginRequest } = await safeGetLoginRequest({
+  const { request: logoutRequest } = await safeGetLogoutRequest({
     challenge: challenge,
   });
 
-  const { redirect: url } = await safeAcceptLoginRequest({
-    challenge: loginRequest.challenge,
-    context: {
-      subject: subject,
-    },
-    remember: true,
-    remember_for: getDurationInSeconds(sessionAge),
-    subject: subject,
+  await safeRejectLogoutRequest({
+    challenge: logoutRequest.challenge || challenge,
   });
 
-  redirect(url);
+  redirect("/default");
 }
