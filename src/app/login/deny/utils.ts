@@ -1,21 +1,20 @@
 import { redirect } from "next/navigation";
 
-import dayjs from "../../../dayjs";
 import {
-  decryptAuthLoginAcceptResponse,
+  decryptAuthLoginDenyResponse,
   SchemaValidationError,
-} from "../../../lib/auth/login/decrypt-auth-login-accept-response";
-import { acceptLoginRequest } from "../../../lib/scorpion/login/accept-login-request";
+} from "../../../lib/auth/login/decrypt-auth-login-deny-response";
 import { LoginRequestGoneError } from "../../../lib/scorpion/login/errors";
 import { getLoginRequest } from "../../../lib/scorpion/login/get-login-request";
+import { rejectLoginRequest } from "../../../lib/scorpion/login/reject-login-request";
 import { createErrorPath } from "../../../lib/urls/create-error-path";
 import { errors } from "./constants";
 
-export async function safeDecryptAuthLoginAcceptResponse(
-  ...args: Parameters<typeof decryptAuthLoginAcceptResponse>
+export async function safeDecryptAuthLoginDenyResponse(
+  ...args: Parameters<typeof decryptAuthLoginDenyResponse>
 ) {
   try {
-    return await decryptAuthLoginAcceptResponse(...args);
+    return await decryptAuthLoginDenyResponse(...args);
   } catch (error) {
     if (error instanceof SchemaValidationError) {
       const { path } = createErrorPath({
@@ -52,11 +51,11 @@ export async function safeGetLoginRequest(
   }
 }
 
-export async function safeAcceptLoginRequest(
-  ...args: Parameters<typeof acceptLoginRequest>
+export async function safeRejectLoginRequest(
+  ...args: Parameters<typeof rejectLoginRequest>
 ) {
   try {
-    return await acceptLoginRequest(...args);
+    return await rejectLoginRequest(...args);
   } catch (error) {
     if (error instanceof LoginRequestGoneError) redirect(error.redirect);
 
@@ -67,8 +66,4 @@ export async function safeAcceptLoginRequest(
 
     redirect(path);
   }
-}
-
-export function getDurationInSeconds(duration: string) {
-  return dayjs.duration(duration).asSeconds();
 }
