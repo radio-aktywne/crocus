@@ -1,5 +1,5 @@
 import { i18n } from "@lingui/core";
-import { msg, t } from "@lingui/macro";
+import { msg } from "@lingui/core/macro";
 import { ColorSchemeScript } from "@mantine/core";
 import { Metadata } from "next";
 
@@ -16,8 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
   await loadLocale({ i18n, language });
 
   return {
-    description: t(i18n)(msg({ message: "crocus" })),
-    title: t(i18n)(msg({ message: "crocus" })),
+    description: i18n._(msg({ message: "crocus" })),
+    title: i18n._(msg({ message: "crocus" })),
   };
 }
 
