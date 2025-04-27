@@ -29,9 +29,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
   const { token } = params;
 
-  const { challenge, subject } = await safeDecryptAuthLoginAcceptResponse({
-    data: token,
-  });
+  const { challenge, subject, traits } =
+    await safeDecryptAuthLoginAcceptResponse({
+      data: token,
+    });
 
   const { request: loginRequest } = await safeGetLoginRequest({
     challenge: challenge,
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     challenge: loginRequest.challenge,
     context: {
       subject: subject,
+      traits: traits,
     },
     remember: true,
     remember_for: getDurationInSeconds(sessionAge),

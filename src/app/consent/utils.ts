@@ -48,6 +48,7 @@ export function createIdToken(context: unknown) {
       "subject" in ctx && typeof ctx.subject === "string"
         ? ctx.subject
         : undefined,
+    traits: "traits" in ctx ? ctx.traits : undefined,
   };
 }
 

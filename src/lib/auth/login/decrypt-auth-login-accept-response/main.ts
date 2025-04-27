@@ -15,5 +15,9 @@ export async function decryptAuthLoginAcceptResponse({
   const { data: parsed, error } =
     authLoginAcceptResponseSchema.safeParse(decrypted);
   if (error) throw new SchemaValidationError();
-  return { challenge: parsed.challenge, subject: parsed.subject };
+  return {
+    challenge: parsed.challenge,
+    subject: parsed.subject,
+    traits: parsed.traits,
+  };
 }
