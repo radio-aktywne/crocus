@@ -5,4 +5,5 @@ export type DecryptAuthLoginAcceptResponseInput = {
 export type DecryptAuthLoginAcceptResponseOutput = {
   challenge: string;
   subject: string;
+  traits: unknown;
 };
