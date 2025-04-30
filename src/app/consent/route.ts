@@ -33,17 +33,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     challenge,
   });
 
-  if (consentRequest.skip || consentRequest.client?.skip_consent) {
-    const { redirect: url } = await safeAcceptConsentRequest({
-      challenge: consentRequest.challenge,
-      grant_access_token_audience:
-        consentRequest.requested_access_token_audience,
-      grant_scope: consentRequest.requested_scope,
-    });
-
-    redirect(url);
-  }
-
   const { redirect: url } = await safeAcceptConsentRequest({
     challenge: consentRequest.challenge,
     grant_access_token_audience: consentRequest.requested_access_token_audience,
