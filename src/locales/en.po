@@ -18,7 +18,7 @@ msgstr ""
 #: src/components/metadata/error/error-page-metadata/main.tsx:13
 #: src/app/layout.tsx:19
 #: src/app/layout.tsx:20
-#: src/app/error/page.tsx:18
+#: src/app/error/page.tsx:19
 msgid "crocus"
 msgstr "crocus"
 
@@ -28,7 +28,7 @@ msgstr "Error"
 
 #: src/components/metadata/root/root-error-metadata/main.tsx:14
 #: src/components/metadata/error/error-page-metadata/main.tsx:14
-#: src/app/error/page.tsx:19
+#: src/app/error/page.tsx:20
 msgid "Error • crocus"
 msgstr "Error • crocus"
 

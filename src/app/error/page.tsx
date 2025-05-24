@@ -1,5 +1,6 @@
 import { i18n } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
+import { MainLayout } from "@radio-aktywne/ui";
 import { Metadata } from "next";
 
 import { ErrorPageMetadata } from "../../components/metadata/error/error-page-metadata";
@@ -36,7 +37,7 @@ export default function ErrorPage({ searchParams }: ErrorPageInput) {
   } = params;
 
   return (
-    <>
+    <MainLayout>
       <ErrorPageMetadata />
       <ErrorPageView
         debug={debug}
@@ -44,6 +45,6 @@ export default function ErrorPage({ searchParams }: ErrorPageInput) {
         error={error}
         hint={hint}
       />
-    </>
+    </MainLayout>
   );
 }
