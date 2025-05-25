@@ -44,8 +44,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       subject: subject,
       traits: traits,
     },
-    remember: true,
-    remember_for: getDurationInSeconds(sessionAge),
+    extend_session_lifespan: loginRequest.skip ? true : undefined,
+    remember: loginRequest.skip ? undefined : true,
+    remember_for: loginRequest.skip
+      ? undefined
+      : getDurationInSeconds(sessionAge),
     subject: subject,
   });
 

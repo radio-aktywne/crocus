@@ -7,7 +7,7 @@ import { createOrchidAuthLoginURL } from "../../lib/urls/create-orchid-auth-logi
 import { parseQueryParams } from "../../lib/urls/parse-query-params";
 import { errors } from "./constants";
 import { searchParamsSchema } from "./schemas";
-import { safeAcceptLoginRequest, safeGetLoginRequest } from "./utils";
+import { safeGetLoginRequest } from "./utils";
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data: params, error: paramsError } = parseQueryParams({
@@ -29,16 +29,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { request: loginRequest } = await safeGetLoginRequest({
     challenge: challenge,
   });
-
-  if (loginRequest.skip) {
-    const { redirect: url } = await safeAcceptLoginRequest({
-      challenge: loginRequest.challenge,
-      extend_session_lifespan: true,
-      subject: loginRequest.subject,
-    });
-
-    redirect(url);
-  }
 
   const { data: token } = await encryptAuthLoginRequest({
     challenge: loginRequest.challenge,
