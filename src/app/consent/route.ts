@@ -37,8 +37,10 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     challenge: consentRequest.challenge,
     grant_access_token_audience: consentRequest.requested_access_token_audience,
     grant_scope: consentRequest.requested_scope,
-    remember: true,
-    remember_for: getDurationInSeconds(sessionAge),
+    remember: consentRequest.skip ? undefined : true,
+    remember_for: consentRequest.skip
+      ? undefined
+      : getDurationInSeconds(sessionAge),
     session: {
       id_token: createIdToken(consentRequest.context),
     },
