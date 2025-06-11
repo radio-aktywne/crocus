@@ -11,6 +11,7 @@ export async function getConsentRequest({
   const { data, error, response } = await scorpion.GET(
     "/admin/oauth2/auth/requests/consent",
     {
+      cache: "no-store",
       params: {
         query: { consent_challenge: challenge },
       },

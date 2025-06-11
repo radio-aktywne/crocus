@@ -11,6 +11,8 @@ import { parseQueryParams } from "../../lib/urls/parse-query-params";
 import { searchParamsSchema } from "./schemas";
 import { ErrorPageInput } from "./types";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const { language } = getLanguage();
   await loadLocale({ i18n, language });

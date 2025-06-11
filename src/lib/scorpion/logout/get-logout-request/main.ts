@@ -11,6 +11,7 @@ export async function getLogoutRequest({
   const { data, error, response } = await scorpion.GET(
     "/admin/oauth2/auth/requests/logout",
     {
+      cache: "no-store",
       params: {
         query: { logout_challenge: challenge },
       },

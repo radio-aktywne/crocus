@@ -11,6 +11,7 @@ export async function getLoginRequest({
   const { data, error, response } = await scorpion.GET(
     "/admin/oauth2/auth/requests/login",
     {
+      cache: "no-store",
       params: {
         query: { login_challenge: challenge },
       },
