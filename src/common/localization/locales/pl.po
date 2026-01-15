@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: pl\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/client/test/components/test-widget/main.tsx:51
+msgid "An unexpected error occurred"
+msgstr "Wystąpił nieoczekiwany błąd"
+
+#: src/app/(root)/(main)/default/page.tsx:20
+#: src/app/(root)/layout.tsx:39
+msgid "crocus"
+msgstr "crocus"
+
+#: src/client/test/components/test-widget/components/test-form/main.tsx:25
+msgid "Enter some value"
+msgstr "Wprowadź jakąś wartość"
+
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:46
+msgid "Error"
+msgstr "Błąd"
+
+#: src/app/(root)/(main)/error.tsx:11
+#: src/app/(root)/(main)/error/page.tsx:20
+msgid "Error • crocus"
+msgstr "Błąd • crocus"
+
+#: src/isomorphic/core/components/flow/error-widget/main.tsx:16
+msgid "Error in OIDC flow"
+msgstr "Błąd w procesie OIDC"
+
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:56
+msgid "Info"
+msgstr "Informacja"
+
+#: src/client/test/components/test-widget/main.tsx:41
+#: src/client/test/components/test-widget/main.tsx:61
+msgid "Invalid input"
+msgstr "Nieprawidłowe dane wejściowe"
+
+#: src/app/(root)/(main)/not-found.tsx:15
+msgid "Not Found • crocus"
+msgstr "Nie znaleziono • crocus"
+
+#: src/app/(root)/(main)/not-found.view.tsx:8
+msgid "Page not found"
+msgstr "Nie znaleziono strony"
+
+#: src/isomorphic/core/components/generic/error-widget/main.tsx:21
+msgid "Retry"
+msgstr "Spróbuj ponownie"
+
+#: src/app/(root)/(main)/error.view.tsx:10
+msgid "Something went wrong"
+msgstr "Coś poszło nie tak"
+
+#: src/client/test/components/test-widget/components/test-form/main.tsx:30
+msgid "Submit"
+msgstr "Wyślij"
+
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:66
+msgid "Success"
+msgstr "Sukces"
+
+#: src/app/(root)/layout.tsx:33
+msgid "Users OIDC auth app 🪪"
+msgstr "Users OIDC auth app 🪪"
+
+#: src/isomorphic/notifications/hooks/use-notifications/main.ts:76
+msgid "Warning"
+msgstr "Ostrzeżenie"
+
+#: src/server/orpc/vars/procedures/vars/test/vars/validate/main.ts:27
+msgid "Why did the chicken cross the road? To get to the other side."
+msgstr "Dlaczego kura przeszła przez ulicę? Żeby dostać się na drugą stronę."
