@@ -43,18 +43,6 @@ You can configure the app at runtime using various environment variables:
 - `CROCUS__SERVER__PORT` -
   port to run the server on
   (default: `20020`)
-- `CROCUS__URLS__CROCUS__HOST` -
-  host of the public URL of the crocus app
-  (default: `localhost`)
-- `CROCUS__URLS__CROCUS__PATH` -
-  path of the public URL of the crocus app
-  (default: ``)
-- `CROCUS__URLS__CROCUS__PORT` -
-  port of the public URL of the crocus app
-  (default: `20020`)
-- `CROCUS__URLS__CROCUS__SCHEME` -
-  scheme of the public URL of the crocus app
-  (default: `http`)
 - `CROCUS__URLS__ORCHID__HOST` -
   host of the public URL of the orchid app
   (default: `localhost`)

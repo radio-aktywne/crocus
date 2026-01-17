@@ -6,9 +6,9 @@ import { connection } from "next/server";
 import type { RouteInput } from "../../../../types";
 import type { Keys } from "./types";
 
+import { createUrl } from "../../../../../common/generic/lib/create-url";
 import { AuthError } from "../../../../../server/auth/errors";
 import { decryptLogoutDenyResponse } from "../../../../../server/auth/lib/decrypt-logout-deny-response";
-import { createDefaultUrl } from "../../../../../server/core/lib/flow/create-default-url";
 import { createErrorUrl } from "../../../../../server/core/lib/flow/create-error-url";
 import { state } from "../../../../../server/state/vars/state";
 import { Schemas } from "./schemas";
@@ -56,5 +56,5 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
     if (error) redirect(createErrorUrl());
   })();
 
-  redirect(createDefaultUrl());
+  redirect(createUrl({ path: "/default" }));
 }
