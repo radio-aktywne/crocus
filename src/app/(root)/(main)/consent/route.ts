@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
       });
 
     if (error && "redirect_to" in error) redirect(error.redirect_to);
-    if (error) redirect(createErrorUrl());
+    if (error) redirect(createErrorUrl().url);
 
     return { consentRequest: data };
   })();
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
         },
       });
 
-    if (error) redirect(createErrorUrl());
+    if (error) redirect(createErrorUrl().url);
 
     return { redirectUrl: data.redirect_to };
   })();

@@ -11,5 +11,7 @@ export function getValidationIssue({
     (issue) => issue.path?.join(".") === path,
   );
 
-  return issue?.message;
+  const message = issue?.message;
+
+  return { message: message };
 }
