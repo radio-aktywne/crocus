@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/client/test/components/test-widget/main.tsx:51
+#: src/client/test/components/test-widget/main.tsx:52
 msgid "An unexpected error occurred"
 msgstr "Wystąpił nieoczekiwany błąd"
 
@@ -44,7 +44,7 @@ msgid "Info"
 msgstr "Informacja"
 
 #: src/client/test/components/test-widget/main.tsx:41
-#: src/client/test/components/test-widget/main.tsx:61
+#: src/client/test/components/test-widget/main.tsx:62
 msgid "Invalid input"
 msgstr "Nieprawidłowe dane wejściowe"
 
@@ -80,6 +80,6 @@ msgstr "Users OIDC auth app 🪪"
 msgid "Warning"
 msgstr "Ostrzeżenie"
 
-#: src/server/orpc/vars/procedures/vars/test/vars/validate/main.ts:27
+#: src/server/orpc/vars/procedures/vars/test/vars/validate/main.ts:28
 msgid "Why did the chicken cross the road? To get to the other side."
 msgstr "Dlaczego kura przeszła przez ulicę? Żeby dostać się na drugą stronę."

@@ -9,7 +9,7 @@ export function createErrorUrl({
   error,
   hint,
 }: CreateErrorUrlInput = {}): CreateErrorUrlOutput {
-  return createUrl({
+  const { url } = createUrl({
     path: "/error",
     query: {
       ...constants.defaults,
@@ -19,4 +19,6 @@ export function createErrorUrl({
       ...(hint ? { hint: hint } : {}),
     },
   });
+
+  return { url: url };
 }

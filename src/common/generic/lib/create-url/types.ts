@@ -19,4 +19,6 @@ type RelativeUrlInput = AnyUrlInput & {
 
 export type CreateUrlInput = AbsoluteUrlInput | RelativeUrlInput;
 
-export type CreateUrlOutput = string;
+export type CreateUrlOutput = {
+  url: string;
+};

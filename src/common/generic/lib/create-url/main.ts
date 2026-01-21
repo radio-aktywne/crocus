@@ -21,5 +21,7 @@ export function createUrl({
       : "";
   const fragmentPart = fragment ? `#${fragment}` : "";
 
-  return basePart + pathPart + queryPart + fragmentPart;
+  const url = basePart + pathPart + queryPart + fragmentPart;
+
+  return { url: url };
 }

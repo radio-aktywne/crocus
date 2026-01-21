@@ -12,17 +12,18 @@ export const validate = orpcServerRootBase.test.validate
       locale: context.localeMiddleware.locale,
     });
 
-    const response = await state.current.apis.icanhazdadjoke.getRandomJoke({
-      headers: {
-        Accept: "application/json",
-      },
-      throwOnError: true,
-    });
+    const { data: getRandomJokeData } =
+      await state.current.apis.icanhazdadjoke.getRandomJoke({
+        headers: {
+          Accept: "application/json",
+        },
+        throwOnError: true,
+      });
 
     return {
       message:
         context.localeMiddleware.locale === "en"
-          ? response.data.joke
+          ? getRandomJokeData.joke
           : localization.localize(
               msg({
                 message:

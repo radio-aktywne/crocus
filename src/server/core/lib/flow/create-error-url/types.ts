@@ -5,4 +5,6 @@ export type CreateErrorUrlInput = {
   hint?: string;
 };
 
-export type CreateErrorUrlOutput = string;
+export type CreateErrorUrlOutput = {
+  url: string;
+};

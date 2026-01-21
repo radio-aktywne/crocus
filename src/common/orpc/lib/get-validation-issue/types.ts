@@ -5,4 +5,6 @@ export type GetValidationIssueInput = {
   path: string;
 };
 
-export type GetValidationIssueOutput = string | undefined;
+export type GetValidationIssueOutput = {
+  message: string | undefined;
+};

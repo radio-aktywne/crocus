@@ -42,7 +42,8 @@ export function TestWidget({}: TestWidgetInput) {
 
           return {
             errors: {
-              value: getValidationIssue({ error: error, path: "value" }),
+              value: getValidationIssue({ error: error, path: "value" })
+                .message,
             },
           };
         }

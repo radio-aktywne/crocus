@@ -43,7 +43,7 @@ export function useForm<SchemaType extends ZodObject>({
           result,
           form.reset,
           form.setErrors,
-          form.setValues,
+          form.setInitialValues,
           localization.localize,
         );
       } finally {
@@ -53,7 +53,7 @@ export function useForm<SchemaType extends ZodObject>({
     [
       form.reset,
       form.setErrors,
-      form.setValues,
+      form.setInitialValues,
       localization.localize,
       onSubmit,
     ],
