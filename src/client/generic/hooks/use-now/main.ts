@@ -37,7 +37,10 @@ export function useNow({}: UseNowInput = {}): UseNowOutput {
 
     return () => {
       if (state.current.now === undefined) return;
-      if (state.current.now.counter > 1) return;
+
+      state.current.now.counter -= 1;
+
+      if (state.current.now.counter > 0) return;
 
       window.clearTimeout(state.current.now.timer);
       state.current.now = undefined;

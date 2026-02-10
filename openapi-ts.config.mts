@@ -80,6 +80,14 @@ export default defineConfig(
             // Use PascalCase for schema names
             case: "PascalCase",
 
+            dates: {
+              // Allow datetimes without timezone
+              local: true,
+
+              // Allow datetimes with offset timezone
+              offset: true,
+            },
+
             definitions: {
               name: "{{name}}Schema",
             },
@@ -105,16 +113,17 @@ export default defineConfig(
 
           // Generate SDK
           {
-            // Generate SDK class
-            asClass: true,
-
             // Don't use generated client by default
             client: false,
 
-            // Make SDK class instantiable
-            instance: true,
-
             name: "@hey-api/sdk",
+
+            // Generate instantiable SDK class
+            operations: {
+              container: "class",
+              methods: "instance",
+              strategy: "single",
+            },
 
             // Use generated schemas for validation
             validator: true,

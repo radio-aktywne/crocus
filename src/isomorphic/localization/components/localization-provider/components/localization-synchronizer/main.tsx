@@ -10,7 +10,7 @@ import { useLocalization } from "../../../../hooks/use-localization";
 export function LocalizationSynchronizer({}: LocalizationSynchronizerInput) {
   const { localization } = useLocalization();
 
-  const { data, refetch } = useQuery(
+  const resolveLocaleQuery = useQuery(
     orpcClientSideQueryClient.localization.resolveLocale.queryOptions({
       refetchInterval: 0,
       staleTime: 0,
@@ -18,13 +18,16 @@ export function LocalizationSynchronizer({}: LocalizationSynchronizerInput) {
   );
 
   useEffect(() => {
-    if (data === undefined) return;
-    if (data.locale === localization.locale) return;
+    if (resolveLocaleQuery.data === undefined) return;
+    if (resolveLocaleQuery.data.locale === localization.locale) return;
 
-    localization.lingui.activate(data.locale);
-  }, [data, localization.locale, localization.lingui]);
+    localization.lingui.activate(resolveLocaleQuery.data.locale);
+  }, [localization.locale, localization.lingui, resolveLocaleQuery.data]);
 
-  useWindowEvent("languagechange", async () => await refetch());
+  useWindowEvent(
+    "languagechange",
+    async () => await resolveLocaleQuery.refetch(),
+  );
 
   return null;
 }
