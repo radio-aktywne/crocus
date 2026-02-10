@@ -1,22 +1,24 @@
-import {
-  defaultShouldDehydrateQuery,
-  QueryClient,
-} from "@tanstack/react-query";
+import { MutationCache, QueryClient } from "@tanstack/react-query";
 
 import type { CreateQueryClientInput, CreateQueryClientOutput } from "./types";
 
 import { constants } from "./constants";
-import { deserialize, hashKey, serialize } from "./utils";
+import {
+  deserialize,
+  hashKey,
+  invalidateQueriesForMutation,
+  serialize,
+  shouldDehydrateQuery,
+  shouldRedactErrors,
+} from "./utils";
 
 export function createQueryClient({}: CreateQueryClientInput = {}): CreateQueryClientOutput {
   const queryClient = new QueryClient({
     defaultOptions: {
       dehydrate: {
         serializeData: serialize,
-        shouldDehydrateQuery: (query) =>
-          defaultShouldDehydrateQuery(query) ||
-          query.state.status === "pending",
-        shouldRedactErrors: () => false,
+        shouldDehydrateQuery: shouldDehydrateQuery,
+        shouldRedactErrors: shouldRedactErrors,
       },
       hydrate: {
         deserializeData: deserialize,
@@ -27,6 +29,12 @@ export function createQueryClient({}: CreateQueryClientInput = {}): CreateQueryC
         staleTime: constants.times.stale,
       },
     },
+
+    mutationCache: new MutationCache({
+      onSuccess: async (data, variables, result, mutation, context) => {
+        await invalidateQueriesForMutation(mutation, context.client);
+      },
+    }),
   });
 
   return { queryClient: queryClient };
