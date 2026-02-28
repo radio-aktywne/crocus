@@ -44,7 +44,7 @@
   "devDependencies": {
     "@eslint/config-helpers": "~0.5",
     "@eslint/js": "~9.39",
-    "@hey-api/openapi-ts": "~0.92",
+    "@hey-api/openapi-ts": "~0.93",
     "@lingui/cli": "~5.9",
     "@lingui/format-po": "~5.9",
     "@lingui/loader": "~5.9",

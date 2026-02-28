@@ -22,9 +22,9 @@ export const GetRandomJokeSuccessResponsePayloadSchema = z
   });
 
 export const GetRandomJokeRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**

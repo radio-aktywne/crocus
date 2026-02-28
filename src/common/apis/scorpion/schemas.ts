@@ -7,18 +7,20 @@ import * as z from "zod";
  */
 export const TrustedOAuth2JwtGrantJsonWebKeySchema = z
   .object({
-    kid: z.optional(
-      z.string().register(z.globalRegistry, {
+    kid: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'The "key_id" is key unique identifier (same as kid header in jws/jwt).',
-      }),
-    ),
-    set: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    set: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'The "set" is basically a name for a group(set) of keys. Will be the same as "issuer" in grant.',
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "OAuth2 JWT Bearer Grant Type Issuer Trusted JSON Web Key",
@@ -29,43 +31,49 @@ export const TrustedOAuth2JwtGrantJsonWebKeySchema = z
  */
 export const TrustedOAuth2JwtGrantIssuerSchema = z
   .object({
-    allow_any_subject: z.optional(
-      z.boolean().register(z.globalRegistry, {
+    allow_any_subject: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           'The "allow_any_subject" indicates that the issuer is allowed to have any principal as the subject of the JWT.',
-      }),
-    ),
-    created_at: z.optional(
-      z.iso.datetime({ offset: true, local: true }).register(z.globalRegistry, {
+      })
+      .optional(),
+    created_at: z.iso
+      .datetime({ offset: true, local: true })
+      .register(z.globalRegistry, {
         description: 'The "created_at" indicates, when grant was created.',
-      }),
-    ),
-    expires_at: z.optional(
-      z.iso.datetime({ offset: true, local: true }).register(z.globalRegistry, {
+      })
+      .optional(),
+    expires_at: z.iso
+      .datetime({ offset: true, local: true })
+      .register(z.globalRegistry, {
         description:
           'The "expires_at" indicates, when grant will expire, so we will reject assertion from "issuer" targeting "subject".',
-      }),
-    ),
-    id: z.optional(z.string()),
-    issuer: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    id: z.string().optional(),
+    issuer: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'The "issuer" identifies the principal that issued the JWT assertion (same as "iss" claim in JWT).',
-      }),
-    ),
-    public_key: z.optional(TrustedOAuth2JwtGrantJsonWebKeySchema),
-    scope: z.optional(
-      z.array(z.string()).register(z.globalRegistry, {
+      })
+      .optional(),
+    public_key: TrustedOAuth2JwtGrantJsonWebKeySchema.optional(),
+    scope: z
+      .array(z.string())
+      .register(z.globalRegistry, {
         description:
           'The "scope" contains list of scope values (as described in Section 3.3 of OAuth 2.0 [RFC6749])',
-      }),
-    ),
-    subject: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    subject: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'The "subject" identifies the principal that is the subject of the JWT.',
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "OAuth2 JWT Bearer Grant Type Issuer Trust Relationship",
@@ -85,12 +93,12 @@ export const JsonWebKeySchema = z.object({
     description:
       'The "alg" (algorithm) parameter identifies the algorithm intended for\nuse with the key.  The values used should either be registered in the\nIANA "JSON Web Signature and Encryption Algorithms" registry\nestablished by [JWA] or be a value that contains a Collision-\nResistant Name.',
   }),
-  crv: z.optional(z.string()),
-  d: z.optional(z.string()),
-  dp: z.optional(z.string()),
-  dq: z.optional(z.string()),
-  e: z.optional(z.string()),
-  k: z.optional(z.string()),
+  crv: z.string().optional(),
+  d: z.string().optional(),
+  dp: z.string().optional(),
+  dq: z.string().optional(),
+  e: z.string().optional(),
+  k: z.string().optional(),
   kid: z.string().register(z.globalRegistry, {
     description:
       'The "kid" (key ID) parameter is used to match a specific key.  This\nis used, for instance, to choose among a set of keys within a JWK Set\nduring key rollover.  The structure of the "kid" value is\nunspecified.  When "kid" values are used within a JWK Set, different\nkeys within the JWK Set SHOULD use distinct "kid" values.  (One\nexample in which different keys might use the same "kid" value is if\nthey have different "kty" (key type) values but are considered to be\nequivalent alternatives by the application using them.)  The "kid"\nvalue is a case-sensitive string.',
@@ -99,22 +107,23 @@ export const JsonWebKeySchema = z.object({
     description:
       'The "kty" (key type) parameter identifies the cryptographic algorithm\nfamily used with the key, such as "RSA" or "EC". "kty" values should\neither be registered in the IANA "JSON Web Key Types" registry\nestablished by [JWA] or be a value that contains a Collision-\nResistant Name.  The "kty" value is a case-sensitive string.',
   }),
-  n: z.optional(z.string()),
-  p: z.optional(z.string()),
-  q: z.optional(z.string()),
-  qi: z.optional(z.string()),
+  n: z.string().optional(),
+  p: z.string().optional(),
+  q: z.string().optional(),
+  qi: z.string().optional(),
   use: z.string().register(z.globalRegistry, {
     description:
       'Use ("public key use") identifies the intended use of\nthe public key. The "use" parameter is employed to indicate whether\na public key is used for encrypting data or verifying the signature\non data. Values are commonly "sig" (signature) or "enc" (encryption).',
   }),
-  x: z.optional(z.string()),
-  x5c: z.optional(
-    z.array(z.string()).register(z.globalRegistry, {
+  x: z.string().optional(),
+  x5c: z
+    .array(z.string())
+    .register(z.globalRegistry, {
       description:
         'The "x5c" (X.509 certificate chain) parameter contains a chain of one\nor more PKIX certificates [RFC5280].  The certificate chain is\nrepresented as a JSON array of certificate value strings.  Each\nstring in the array is a base64-encoded (Section 4 of [RFC4648] --\nnot base64url-encoded) DER [ITU.X690.1994] PKIX certificate value.\nThe PKIX certificate containing the key value MUST be the first\ncertificate.',
-    }),
-  ),
-  y: z.optional(z.string()),
+    })
+    .optional(),
+  y: z.string().optional(),
 });
 
 /**
@@ -122,12 +131,13 @@ export const JsonWebKeySchema = z.object({
  */
 export const TrustOAuth2JwtGrantIssuerSchema = z
   .object({
-    allow_any_subject: z.optional(
-      z.boolean().register(z.globalRegistry, {
+    allow_any_subject: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           'The "allow_any_subject" indicates that the issuer is allowed to have any principal as the subject of the JWT.',
-      }),
-    ),
+      })
+      .optional(),
     expires_at: z.iso
       .datetime({ offset: true, local: true })
       .register(z.globalRegistry, {
@@ -143,12 +153,13 @@ export const TrustOAuth2JwtGrantIssuerSchema = z
       description:
         'The "scope" contains list of scope values (as described in Section 3.3 of OAuth 2.0 [RFC6749])',
     }),
-    subject: z.optional(
-      z.string().register(z.globalRegistry, {
+    subject: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'The "subject" identifies the principal that is the subject of the JWT.',
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "Trust OAuth2 JWT Bearer Grant Type Issuer Request Body",
@@ -158,42 +169,45 @@ export const TrustOAuth2JwtGrantIssuerSchema = z
  * The request payload used to accept a login or consent request.
  */
 export const RejectOAuth2RequestSchema = z.object({
-  error: z.optional(
-    z.string().register(z.globalRegistry, {
+  error: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "The error should follow the OAuth2 error format (e.g. `invalid_request`, `login_required`).\n\nDefaults to `request_denied`.",
-    }),
-  ),
-  error_debug: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  error_debug: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "Debug contains information to help resolve the problem as a developer. Usually not exposed\nto the public but only in the server logs.",
-    }),
-  ),
-  error_description: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  error_description: z
+    .string()
+    .register(z.globalRegistry, {
       description: "Description of the error in a human readable format.",
-    }),
-  ),
-  error_hint: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  error_hint: z
+    .string()
+    .register(z.globalRegistry, {
       description: "Hint to help resolve the error.",
-    }),
-  ),
-  status_code: z.optional(
-    z.coerce
-      .bigint()
-      .min(BigInt("-9223372036854775808"), {
-        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-      })
-      .max(BigInt("9223372036854775807"), {
-        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-      })
-      .register(z.globalRegistry, {
-        description:
-          "Represents the HTTP status code of the error (e.g. 401 or 403)\n\nDefaults to 400",
-      }),
-  ),
+    })
+    .optional(),
+  status_code: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    })
+    .register(z.globalRegistry, {
+      description:
+        "Represents the HTTP status code of the error (e.g. 401 or 403)\n\nDefaults to 400",
+    })
+    .optional(),
 });
 
 /**
@@ -216,10 +230,9 @@ export const OAuth2RedirectToSchema = z
 /**
  * NullTime implements sql.NullTime functionality.
  */
-export const NullTimeSchema = z.union([
-  z.iso.datetime({ offset: true, local: true }),
-  z.null(),
-]);
+export const NullTimeSchema = z.iso
+  .datetime({ offset: true, local: true })
+  .nullable();
 
 /**
  * JSONRawMessage represents a json.RawMessage that works well with JSON, SQL, and Swagger.
@@ -231,10 +244,10 @@ export const JsonRawMessageSchema = z.unknown();
  *
  * Specify a time duration in milliseconds, seconds, minutes, hours.
  */
-export const NullDurationSchema = z.union([
-  z.string().regex(/^([0-9]+(ns|us|ms|s|m|h))*$/),
-  z.null(),
-]);
+export const NullDurationSchema = z
+  .string()
+  .regex(/^([0-9]+(ns|us|ms|s|m|h))*$/)
+  .nullable();
 
 /**
  * StringSliceJSONFormat represents []string{} which is encoded to/from JSON for SQL storage.
@@ -249,207 +262,232 @@ export const StringSliceJsonFormatSchema = z.array(z.string());
  */
 export const OAuth2ClientSchema = z
   .object({
-    access_token_strategy: z.optional(
-      z.string().register(z.globalRegistry, {
+    access_token_strategy: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Access Token Strategy\n\nAccessTokenStrategy is the strategy used to generate access tokens.\nValid options are `jwt` and `opaque`. `jwt` is a bad idea, see https://www.ory.sh/docs/hydra/advanced#json-web-tokens\nSetting the stragegy here overrides the global setting in `strategies.access_token`.",
-      }),
-    ),
-    allowed_cors_origins: z.optional(StringSliceJsonFormatSchema),
-    audience: z.optional(StringSliceJsonFormatSchema),
+      })
+      .optional(),
+    allowed_cors_origins: StringSliceJsonFormatSchema.optional(),
+    audience: StringSliceJsonFormatSchema.optional(),
     authorization_code_grant_access_token_lifespan:
-      z.optional(NullDurationSchema),
-    authorization_code_grant_id_token_lifespan: z.optional(NullDurationSchema),
+      NullDurationSchema.optional(),
+    authorization_code_grant_id_token_lifespan: NullDurationSchema.optional(),
     authorization_code_grant_refresh_token_lifespan:
-      z.optional(NullDurationSchema),
-    backchannel_logout_session_required: z.optional(
-      z.boolean().register(z.globalRegistry, {
+      NullDurationSchema.optional(),
+    backchannel_logout_session_required: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Back-Channel Logout Session Required\n\nBoolean value specifying whether the RP requires that a sid (session ID) Claim be included in the Logout\nToken to identify the RP session with the OP when the backchannel_logout_uri is used.\nIf omitted, the default value is false.",
-      }),
-    ),
-    backchannel_logout_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    backchannel_logout_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Back-Channel Logout URI\n\nRP URL that will cause the RP to log itself out when sent a Logout Token by the OP.",
-      }),
-    ),
+      })
+      .optional(),
     client_credentials_grant_access_token_lifespan:
-      z.optional(NullDurationSchema),
-    client_id: z.optional(
-      z.string().register(z.globalRegistry, {
+      NullDurationSchema.optional(),
+    client_id: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client ID\n\nThe ID is immutable. If no ID is provided, a UUID4 will be generated.",
-      }),
-    ),
-    client_name: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    client_name: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Name\n\nThe human-readable name of the client to be presented to the\nend-user during authorization.",
-      }),
-    ),
-    client_secret: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    client_secret: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Secret\n\nThe secret will be included in the create request as cleartext, and then\nnever again. The secret is kept in hashed format and is not recoverable once lost.",
-      }),
-    ),
-    client_secret_expires_at: z.optional(
-      z.coerce
-        .bigint()
-        .min(BigInt("-9223372036854775808"), {
-          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-        })
-        .max(BigInt("9223372036854775807"), {
-          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-        })
-        .register(z.globalRegistry, {
-          description:
-            "OAuth 2.0 Client Secret Expires At\n\nThe field is currently not supported and its value is always 0.",
-        }),
-    ),
-    client_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    client_secret_expires_at: z.coerce
+      .bigint()
+      .min(BigInt("-9223372036854775808"), {
+        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+      })
+      .max(BigInt("9223372036854775807"), {
+        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+      })
+      .register(z.globalRegistry, {
+        description:
+          "OAuth 2.0 Client Secret Expires At\n\nThe field is currently not supported and its value is always 0.",
+      })
+      .optional(),
+    client_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client URI\n\nClientURI is a URL string of a web page providing information about the client.\nIf present, the server SHOULD display this URL to the end-user in\na clickable fashion.",
-      }),
-    ),
-    contacts: z.optional(StringSliceJsonFormatSchema),
-    created_at: z.optional(
-      z.iso.datetime({ offset: true, local: true }).register(z.globalRegistry, {
+      })
+      .optional(),
+    contacts: StringSliceJsonFormatSchema.optional(),
+    created_at: z.iso
+      .datetime({ offset: true, local: true })
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Creation Date\n\nCreatedAt returns the timestamp of the client's creation.",
-      }),
-    ),
-    frontchannel_logout_session_required: z.optional(
-      z.boolean().register(z.globalRegistry, {
+      })
+      .optional(),
+    frontchannel_logout_session_required: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Front-Channel Logout Session Required\n\nBoolean value specifying whether the RP requires that iss (issuer) and sid (session ID) query parameters be\nincluded to identify the RP session with the OP when the frontchannel_logout_uri is used.\nIf omitted, the default value is false.",
-      }),
-    ),
-    frontchannel_logout_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    frontchannel_logout_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Front-Channel Logout URI\n\nRP URL that will cause the RP to log itself out when rendered in an iframe by the OP. An iss (issuer) query\nparameter and a sid (session ID) query parameter MAY be included by the OP to enable the RP to validate the\nrequest and to determine which of the potentially multiple sessions is to be logged out; if either is\nincluded, both MUST be.",
-      }),
-    ),
-    grant_types: z.optional(StringSliceJsonFormatSchema),
-    implicit_grant_access_token_lifespan: z.optional(NullDurationSchema),
-    implicit_grant_id_token_lifespan: z.optional(NullDurationSchema),
-    jwks: z.optional(
-      z.unknown().register(z.globalRegistry, {
+      })
+      .optional(),
+    grant_types: StringSliceJsonFormatSchema.optional(),
+    implicit_grant_access_token_lifespan: NullDurationSchema.optional(),
+    implicit_grant_id_token_lifespan: NullDurationSchema.optional(),
+    jwks: z
+      .unknown()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client JSON Web Key Set\n\nClient's JSON Web Key Set [JWK] document, passed by value. The semantics of the jwks parameter are the same as\nthe jwks_uri parameter, other than that the JWK Set is passed by value, rather than by reference. This parameter\nis intended only to be used by Clients that, for some reason, are unable to use the jwks_uri parameter, for\ninstance, by native applications that might not have a location to host the contents of the JWK Set. If a Client\ncan use jwks_uri, it MUST NOT use jwks. One significant downside of jwks is that it does not enable key rotation\n(which jwks_uri does, as described in Section 10 of OpenID Connect Core 1.0 [OpenID.Core]). The jwks_uri and jwks\nparameters MUST NOT be used together.",
-      }),
-    ),
-    jwks_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    jwks_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client JSON Web Key Set URL\n\nURL for the Client's JSON Web Key Set [JWK] document. If the Client signs requests to the Server, it contains\nthe signing key(s) the Server uses to validate signatures from the Client. The JWK Set MAY also contain the\nClient's encryption keys(s), which are used by the Server to encrypt responses to the Client. When both signing\nand encryption keys are made available, a use (Key Use) parameter value is REQUIRED for all keys in the referenced\nJWK Set to indicate each key's intended usage. Although some algorithms allow the same key to be used for both\nsignatures and encryption, doing so is NOT RECOMMENDED, as it is less secure. The JWK x5c parameter MAY be used\nto provide X.509 representations of keys provided. When used, the bare key values MUST still be present and MUST\nmatch those in the certificate.",
-      }),
-    ),
-    jwt_bearer_grant_access_token_lifespan: z.optional(NullDurationSchema),
-    logo_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    jwt_bearer_grant_access_token_lifespan: NullDurationSchema.optional(),
+    logo_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Logo URI\n\nA URL string referencing the client's logo.",
-      }),
-    ),
-    metadata: z.optional(JsonRawMessageSchema),
-    owner: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    metadata: JsonRawMessageSchema.optional(),
+    owner: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Owner\n\nOwner is a string identifying the owner of the OAuth 2.0 Client.",
-      }),
-    ),
-    policy_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    policy_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Policy URI\n\nPolicyURI is a URL string that points to a human-readable privacy policy document\nthat describes how the deployment organization collects, uses,\nretains, and discloses personal data.",
-      }),
-    ),
-    post_logout_redirect_uris: z.optional(StringSliceJsonFormatSchema),
-    redirect_uris: z.optional(StringSliceJsonFormatSchema),
-    refresh_token_grant_access_token_lifespan: z.optional(NullDurationSchema),
-    refresh_token_grant_id_token_lifespan: z.optional(NullDurationSchema),
-    refresh_token_grant_refresh_token_lifespan: z.optional(NullDurationSchema),
-    registration_access_token: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    post_logout_redirect_uris: StringSliceJsonFormatSchema.optional(),
+    redirect_uris: StringSliceJsonFormatSchema.optional(),
+    refresh_token_grant_access_token_lifespan: NullDurationSchema.optional(),
+    refresh_token_grant_id_token_lifespan: NullDurationSchema.optional(),
+    refresh_token_grant_refresh_token_lifespan: NullDurationSchema.optional(),
+    registration_access_token: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Dynamic Client Registration Access Token\n\nRegistrationAccessToken can be used to update, get, or delete the OAuth2 Client. It is sent when creating a client\nusing Dynamic Client Registration.",
-      }),
-    ),
-    registration_client_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    registration_client_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Dynamic Client Registration URL\n\nRegistrationClientURI is the URL used to update, get, or delete the OAuth2 Client.",
-      }),
-    ),
-    request_object_signing_alg: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    request_object_signing_alg: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Request Object Signing Algorithm\n\nJWS [JWS] alg algorithm [JWA] that MUST be used for signing Request Objects sent to the OP. All Request Objects\nfrom this Client MUST be rejected, if not signed with this algorithm.",
-      }),
-    ),
-    request_uris: z.optional(StringSliceJsonFormatSchema),
-    response_types: z.optional(StringSliceJsonFormatSchema),
-    scope: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    request_uris: StringSliceJsonFormatSchema.optional(),
+    response_types: StringSliceJsonFormatSchema.optional(),
+    scope: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Scope\n\nScope is a string containing a space-separated list of scope values (as\ndescribed in Section 3.3 of OAuth 2.0 [RFC6749]) that the client\ncan use when requesting access tokens.",
-      }),
-    ),
-    sector_identifier_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    sector_identifier_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Sector Identifier URI\n\nURL using the https scheme to be used in calculating Pseudonymous Identifiers by the OP. The URL references a\nfile with a single JSON array of redirect_uri values.",
-      }),
-    ),
-    skip_consent: z.optional(
-      z.boolean().register(z.globalRegistry, {
+      })
+      .optional(),
+    skip_consent: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           "SkipConsent skips the consent screen for this client. This field can only\nbe set from the admin API.",
-      }),
-    ),
-    skip_logout_consent: z.optional(z.union([z.boolean(), z.null()])),
-    subject_type: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    skip_logout_consent: z.boolean().nullish(),
+    subject_type: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Subject Type\n\nThe `subject_types_supported` Discovery parameter contains a\nlist of the supported subject_type values for this server. Valid types include `pairwise` and `public`.",
-      }),
-    ),
+      })
+      .optional(),
     token_endpoint_auth_method: z
-      .optional(
-        z.string().register(z.globalRegistry, {
-          description:
-            "OAuth 2.0 Token Endpoint Authentication Method\n\nRequested Client Authentication method for the Token Endpoint. The options are:\n\n`client_secret_basic`: (default) Send `client_id` and `client_secret` as `application/x-www-form-urlencoded` encoded in the HTTP Authorization header.\n`client_secret_post`: Send `client_id` and `client_secret` as `application/x-www-form-urlencoded` in the HTTP body.\n`private_key_jwt`: Use JSON Web Tokens to authenticate the client.\n`none`: Used for public clients (native apps, mobile apps) which can not have secrets.",
-        }),
-      )
+      .string()
+      .register(z.globalRegistry, {
+        description:
+          "OAuth 2.0 Token Endpoint Authentication Method\n\nRequested Client Authentication method for the Token Endpoint. The options are:\n\n`client_secret_basic`: (default) Send `client_id` and `client_secret` as `application/x-www-form-urlencoded` encoded in the HTTP Authorization header.\n`client_secret_post`: Send `client_id` and `client_secret` as `application/x-www-form-urlencoded` in the HTTP body.\n`private_key_jwt`: Use JSON Web Tokens to authenticate the client.\n`none`: Used for public clients (native apps, mobile apps) which can not have secrets.",
+      })
+      .optional()
       .default("client_secret_basic"),
-    token_endpoint_auth_signing_alg: z.optional(
-      z.string().register(z.globalRegistry, {
+    token_endpoint_auth_signing_alg: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Token Endpoint Signing Algorithm\n\nRequested Client Authentication signing algorithm for the Token Endpoint.",
-      }),
-    ),
-    tos_uri: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    tos_uri: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Terms of Service URI\n\nA URL string pointing to a human-readable terms of service\ndocument for the client that describes a contractual relationship\nbetween the end-user and the client that the end-user accepts when\nauthorizing the client.",
-      }),
-    ),
-    updated_at: z.optional(
-      z.iso.datetime({ offset: true, local: true }).register(z.globalRegistry, {
+      })
+      .optional(),
+    updated_at: z.iso
+      .datetime({ offset: true, local: true })
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client Last Update Date\n\nUpdatedAt returns the timestamp of the last update.",
-      }),
-    ),
-    userinfo_signed_response_alg: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    userinfo_signed_response_alg: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OpenID Connect Request Userinfo Signed Response Algorithm\n\nJWS alg algorithm [JWA] REQUIRED for signing UserInfo Responses. If this is specified, the response will be JWT\n[JWT] serialized, and signed using JWS. The default, if omitted, is for the UserInfo Response to return the Claims\nas a UTF-8 encoded JSON object using the application/json content-type.",
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description:
@@ -460,73 +498,83 @@ export const OAuth2ClientSchema = z
  * Contains information about an ongoing logout request.
  */
 export const OAuth2LogoutRequestSchema = z.object({
-  challenge: z.optional(
-    z.string().register(z.globalRegistry, {
+  challenge: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         'Challenge is the identifier ("logout challenge") of the logout authentication request. It is used to\nidentify the session.',
-    }),
-  ),
-  client: z.optional(z.union([OAuth2ClientSchema, z.null()])),
-  expires_at: z.optional(NullTimeSchema),
-  request_url: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  client: OAuth2ClientSchema.nullish(),
+  expires_at: NullTimeSchema.optional(),
+  request_url: z
+    .string()
+    .register(z.globalRegistry, {
       description: "RequestURL is the original Logout URL requested.",
-    }),
-  ),
-  requested_at: z.optional(NullTimeSchema),
-  rp_initiated: z.optional(
-    z.boolean().register(z.globalRegistry, {
+    })
+    .optional(),
+  requested_at: NullTimeSchema.optional(),
+  rp_initiated: z
+    .boolean()
+    .register(z.globalRegistry, {
       description:
         "RPInitiated is set to true if the request was initiated by a Relying Party (RP), also known as an OAuth 2.0 Client.",
-    }),
-  ),
-  sid: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  sid: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "SessionID is the login session ID that was requested to log out.",
-    }),
-  ),
-  subject: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  subject: z
+    .string()
+    .register(z.globalRegistry, {
       description: "Subject is the user for whom the logout was request.",
-    }),
-  ),
+    })
+    .optional(),
 });
 
 /**
  * Contains optional information about the OpenID Connect request.
  */
 export const OAuth2ConsentRequestOpenIdConnectContextSchema = z.object({
-  acr_values: z.optional(
-    z.array(z.string()).register(z.globalRegistry, {
+  acr_values: z
+    .array(z.string())
+    .register(z.globalRegistry, {
       description:
         "ACRValues is the Authentication AuthorizationContext Class Reference requested in the OAuth 2.0 Authorization request.\nIt is a parameter defined by OpenID Connect and expresses which level of authentication (e.g. 2FA) is required.\n\nOpenID Connect defines it as follows:\n> Requested Authentication AuthorizationContext Class Reference values. Space-separated string that specifies the acr values\nthat the Authorization Server is being requested to use for processing this Authentication Request, with the\nvalues appearing in order of preference. The Authentication AuthorizationContext Class satisfied by the authentication\nperformed is returned as the acr Claim Value, as specified in Section 2. The acr Claim is requested as a\nVoluntary Claim by this parameter.",
-    }),
-  ),
-  display: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  display: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         'Display is a string value that specifies how the Authorization Server displays the authentication and consent user interface pages to the End-User.\nThe defined values are:\npage: The Authorization Server SHOULD display the authentication and consent UI consistent with a full User Agent page view. If the display parameter is not specified, this is the default display mode.\npopup: The Authorization Server SHOULD display the authentication and consent UI consistent with a popup User Agent window. The popup User Agent window should be of an appropriate size for a login-focused dialog and should not obscure the entire window that it is popping up over.\ntouch: The Authorization Server SHOULD display the authentication and consent UI consistent with a device that leverages a touch interface.\nwap: The Authorization Server SHOULD display the authentication and consent UI consistent with a "feature phone" type display.\n\nThe Authorization Server MAY also attempt to detect the capabilities of the User Agent and present an appropriate display.',
-    }),
-  ),
-  id_token_hint_claims: z.optional(
-    z.record(z.string(), z.unknown()).register(z.globalRegistry, {
+    })
+    .optional(),
+  id_token_hint_claims: z
+    .record(z.string(), z.unknown())
+    .register(z.globalRegistry, {
       description:
         "IDTokenHintClaims are the claims of the ID Token previously issued by the Authorization Server being passed as a hint about the\nEnd-User's current or past authenticated session with the Client.",
-    }),
-  ),
-  login_hint: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  login_hint: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "LoginHint hints about the login identifier the End-User might use to log in (if necessary).\nThis hint can be used by an RP if it first asks the End-User for their e-mail address (or other identifier)\nand then wants to pass that value as a hint to the discovered authorization service. This value MAY also be a\nphone number in the format specified for the phone_number Claim. The use of this parameter is optional.",
-    }),
-  ),
-  ui_locales: z.optional(
-    z.array(z.string()).register(z.globalRegistry, {
+    })
+    .optional(),
+  ui_locales: z
+    .array(z.string())
+    .register(z.globalRegistry, {
       description:
         'UILocales is the End-User\'id preferred languages and scripts for the user interface, represented as a\nspace-separated list of BCP47 [RFC5646] language tag values, ordered by preference. For instance, the value\n"fr-CA fr en" represents a preference for French as spoken in Canada, then French (without a region designation),\nfollowed by English (without a region designation). An error SHOULD NOT result if some or all of the requested\nlocales are not supported by the OpenID Provider.',
-    }),
-  ),
+    })
+    .optional(),
 });
 
 /**
@@ -538,19 +586,20 @@ export const OAuth2LoginRequestSchema = z.object({
       'ID is the identifier ("login challenge") of the login request. It is used to\nidentify the session.',
   }),
   client: OAuth2ClientSchema,
-  oidc_context: z.optional(OAuth2ConsentRequestOpenIdConnectContextSchema),
+  oidc_context: OAuth2ConsentRequestOpenIdConnectContextSchema.optional(),
   request_url: z.string().register(z.globalRegistry, {
     description:
       "RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which\ninitiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but\nmight come in handy if you want to deal with additional request parameters.",
   }),
-  requested_access_token_audience: z.optional(StringSliceJsonFormatSchema),
-  requested_scope: z.optional(StringSliceJsonFormatSchema),
-  session_id: z.optional(
-    z.string().register(z.globalRegistry, {
+  requested_access_token_audience: StringSliceJsonFormatSchema.optional(),
+  requested_scope: StringSliceJsonFormatSchema.optional(),
+  session_id: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         'SessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)\nthis ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)\nthis will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-\nchannel logout. It\'s value can generally be used to associate consecutive login requests by a certain user.',
-    }),
-  ),
+    })
+    .optional(),
   skip: z.boolean().register(z.globalRegistry, {
     description:
       "Skip, if true, implies that the client has requested the same scopes from the same user previously.\nIf true, you can skip asking the user to grant the requested scopes, and simply forward the user to the redirect URL.\n\nThis feature allows you to update / set session information.",
@@ -565,70 +614,78 @@ export const OAuth2LoginRequestSchema = z.object({
  * Pass session data to a consent request.
  */
 export const AcceptOAuth2ConsentRequestSessionSchema = z.object({
-  access_token: z.optional(
-    z.unknown().register(z.globalRegistry, {
+  access_token: z
+    .unknown()
+    .register(z.globalRegistry, {
       description:
         "AccessToken sets session data for the access and refresh token, as well as any future tokens issued by the\nrefresh grant. Keep in mind that this data will be available to anyone performing OAuth 2.0 Challenge Introspection.\nIf only your services can perform OAuth 2.0 Challenge Introspection, this is usually fine. But if third parties\ncan access that endpoint as well, sensitive data from the session might be exposed to them. Use with care!",
-    }),
-  ),
-  id_token: z.optional(
-    z.unknown().register(z.globalRegistry, {
+    })
+    .optional(),
+  id_token: z
+    .unknown()
+    .register(z.globalRegistry, {
       description:
         "IDToken sets session data for the OpenID Connect ID token. Keep in mind that the session'id payloads are readable\nby anyone that has access to the ID Challenge. Use with care!",
-    }),
-  ),
+    })
+    .optional(),
 });
 
 /**
  * Contains information on an ongoing consent request.
  */
 export const OAuth2ConsentRequestSchema = z.object({
-  acr: z.optional(
-    z.string().register(z.globalRegistry, {
+  acr: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "ACR represents the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it\nto express that, for example, a user authenticated using two factor authentication.",
-    }),
-  ),
-  amr: z.optional(StringSliceJsonFormatSchema),
+    })
+    .optional(),
+  amr: StringSliceJsonFormatSchema.optional(),
   challenge: z.string().register(z.globalRegistry, {
     description:
       'ID is the identifier ("authorization challenge") of the consent authorization request. It is used to\nidentify the session.',
   }),
-  client: z.optional(OAuth2ClientSchema),
-  context: z.optional(JsonRawMessageSchema),
-  login_challenge: z.optional(
-    z.string().register(z.globalRegistry, {
+  client: OAuth2ClientSchema.optional(),
+  context: JsonRawMessageSchema.optional(),
+  login_challenge: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "LoginChallenge is the login challenge this consent challenge belongs to. It can be used to associate\na login and consent request in the login & consent app.",
-    }),
-  ),
-  login_session_id: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  login_session_id: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         'LoginSessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)\nthis ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)\nthis will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-\nchannel logout. It\'s value can generally be used to associate consecutive login requests by a certain user.',
-    }),
-  ),
-  oidc_context: z.optional(OAuth2ConsentRequestOpenIdConnectContextSchema),
-  request_url: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  oidc_context: OAuth2ConsentRequestOpenIdConnectContextSchema.optional(),
+  request_url: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which\ninitiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but\nmight come in handy if you want to deal with additional request parameters.",
-    }),
-  ),
-  requested_access_token_audience: z.optional(StringSliceJsonFormatSchema),
-  requested_scope: z.optional(StringSliceJsonFormatSchema),
-  skip: z.optional(
-    z.boolean().register(z.globalRegistry, {
+    })
+    .optional(),
+  requested_access_token_audience: StringSliceJsonFormatSchema.optional(),
+  requested_scope: StringSliceJsonFormatSchema.optional(),
+  skip: z
+    .boolean()
+    .register(z.globalRegistry, {
       description:
         "Skip, if true, implies that the client has requested the same scopes from the same user previously.\nIf true, you must not ask the user to grant the requested scopes. You must however either allow or deny the\nconsent request using the usual API call.",
-    }),
-  ),
-  subject: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  subject: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "Subject is the user ID of the end-user that authenticated. Now, that end user needs to grant or deny the scope\nrequested by the OAuth 2.0 client.",
-    }),
-  ),
+    })
+    .optional(),
 });
 
 /**
@@ -638,45 +695,43 @@ export const OAuth2ConsentRequestSchema = z.object({
  */
 export const OAuth2ConsentSessionSchema = z
   .object({
-    consent_request: z.optional(OAuth2ConsentRequestSchema),
-    context: z.optional(JsonRawMessageSchema),
-    expires_at: z.optional(
-      z.object({
-        access_token: z.optional(z.iso.datetime({ offset: true, local: true })),
-        authorize_code: z.optional(
-          z.iso.datetime({ offset: true, local: true }),
-        ),
-        id_token: z.optional(z.iso.datetime({ offset: true, local: true })),
-        par_context: z.optional(z.iso.datetime({ offset: true, local: true })),
-        refresh_token: z.optional(
-          z.iso.datetime({ offset: true, local: true }),
-        ),
-      }),
-    ),
-    grant_access_token_audience: z.optional(StringSliceJsonFormatSchema),
-    grant_scope: z.optional(StringSliceJsonFormatSchema),
-    handled_at: z.optional(NullTimeSchema),
-    remember: z.optional(
-      z.boolean().register(z.globalRegistry, {
+    consent_request: OAuth2ConsentRequestSchema.optional(),
+    context: JsonRawMessageSchema.optional(),
+    expires_at: z
+      .object({
+        access_token: z.iso.datetime({ offset: true, local: true }).optional(),
+        authorize_code: z.iso
+          .datetime({ offset: true, local: true })
+          .optional(),
+        id_token: z.iso.datetime({ offset: true, local: true }).optional(),
+        par_context: z.iso.datetime({ offset: true, local: true }).optional(),
+        refresh_token: z.iso.datetime({ offset: true, local: true }).optional(),
+      })
+      .optional(),
+    grant_access_token_audience: StringSliceJsonFormatSchema.optional(),
+    grant_scope: StringSliceJsonFormatSchema.optional(),
+    handled_at: NullTimeSchema.optional(),
+    remember: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           "Remember Consent\n\nRemember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same\nclient asks the same user for the same, or a subset of, scope.",
-      }),
-    ),
-    remember_for: z.optional(
-      z.coerce
-        .bigint()
-        .min(BigInt("-9223372036854775808"), {
-          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-        })
-        .max(BigInt("9223372036854775807"), {
-          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-        })
-        .register(z.globalRegistry, {
-          description:
-            "Remember Consent For\n\nRememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered indefinitely.",
-        }),
-    ),
-    session: z.optional(AcceptOAuth2ConsentRequestSessionSchema),
+      })
+      .optional(),
+    remember_for: z.coerce
+      .bigint()
+      .min(BigInt("-9223372036854775808"), {
+        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+      })
+      .max(BigInt("9223372036854775807"), {
+        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+      })
+      .register(z.globalRegistry, {
+        description:
+          "Remember Consent For\n\nRememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered indefinitely.",
+      })
+      .optional(),
+    session: AcceptOAuth2ConsentRequestSessionSchema.optional(),
   })
   .register(z.globalRegistry, {
     description: "A completed OAuth 2.0 Consent Session.",
@@ -699,18 +754,18 @@ export const OAuth2ConsentSessionsSchema = z
 export const OAuth2ClientTokenLifespansSchema = z
   .object({
     authorization_code_grant_access_token_lifespan:
-      z.optional(NullDurationSchema),
-    authorization_code_grant_id_token_lifespan: z.optional(NullDurationSchema),
+      NullDurationSchema.optional(),
+    authorization_code_grant_id_token_lifespan: NullDurationSchema.optional(),
     authorization_code_grant_refresh_token_lifespan:
-      z.optional(NullDurationSchema),
+      NullDurationSchema.optional(),
     client_credentials_grant_access_token_lifespan:
-      z.optional(NullDurationSchema),
-    implicit_grant_access_token_lifespan: z.optional(NullDurationSchema),
-    implicit_grant_id_token_lifespan: z.optional(NullDurationSchema),
-    jwt_bearer_grant_access_token_lifespan: z.optional(NullDurationSchema),
-    refresh_token_grant_access_token_lifespan: z.optional(NullDurationSchema),
-    refresh_token_grant_id_token_lifespan: z.optional(NullDurationSchema),
-    refresh_token_grant_refresh_token_lifespan: z.optional(NullDurationSchema),
+      NullDurationSchema.optional(),
+    implicit_grant_access_token_lifespan: NullDurationSchema.optional(),
+    implicit_grant_id_token_lifespan: NullDurationSchema.optional(),
+    jwt_bearer_grant_access_token_lifespan: NullDurationSchema.optional(),
+    refresh_token_grant_access_token_lifespan: NullDurationSchema.optional(),
+    refresh_token_grant_id_token_lifespan: NullDurationSchema.optional(),
+    refresh_token_grant_refresh_token_lifespan: NullDurationSchema.optional(),
   })
   .register(z.globalRegistry, {
     description:
@@ -722,12 +777,13 @@ export const OAuth2ClientTokenLifespansSchema = z
  */
 export const JsonWebKeySetSchema = z
   .object({
-    keys: z.optional(
-      z.array(JsonWebKeySchema).register(z.globalRegistry, {
+    keys: z
+      .array(JsonWebKeySchema)
+      .register(z.globalRegistry, {
         description:
           'List of JSON Web Keys\n\nThe value of the "keys" parameter is an array of JSON Web Key (JWK)\nvalues. By default, the order of the JWK values within the array does\nnot imply an order of preference among them, although applications\nof JWK Sets can choose to assign a meaning to the order for their\npurposes, if desired.',
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "JSON Web Key Set",
@@ -738,12 +794,13 @@ export const JsonWebKeySetSchema = z
  */
 export const JsonPatchSchema = z
   .object({
-    from: z.optional(
-      z.string().register(z.globalRegistry, {
+    from: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'This field is used together with operation "move" and uses JSON Pointer notation.\n\nLearn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).',
-      }),
-    ),
+      })
+      .optional(),
     op: z.string().register(z.globalRegistry, {
       description:
         'The operation to be performed. One of "add", "remove", "replace", "move", "copy", or "test".',
@@ -752,12 +809,13 @@ export const JsonPatchSchema = z
       description:
         "The path to the target path. Uses JSON pointer notation.\n\nLearn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).",
     }),
-    value: z.optional(
-      z.unknown().register(z.globalRegistry, {
+    value: z
+      .unknown()
+      .register(z.globalRegistry, {
         description:
           "The value to be used within the operations.\n\nLearn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).",
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "A JSONPatch document as defined by RFC 6902",
@@ -782,107 +840,114 @@ export const IntrospectedOAuth2TokenSchema = z
       description:
         'Active is a boolean indicator of whether or not the presented token\nis currently active.  The specifics of a token\'s "active" state\nwill vary depending on the implementation of the authorization\nserver and the information it keeps about its tokens, but a "true"\nvalue return for the "active" property will generally indicate\nthat a given token has been issued by this authorization server,\nhas not been revoked by the resource owner, and is within its\ngiven time window of validity (e.g., after its issuance time and\nbefore its expiration time).',
     }),
-    aud: z.optional(
-      z.array(z.string()).register(z.globalRegistry, {
+    aud: z
+      .array(z.string())
+      .register(z.globalRegistry, {
         description:
           "Audience contains a list of the token's intended audiences.",
-      }),
-    ),
-    client_id: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    client_id: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "ID is aclient identifier for the OAuth 2.0 client that\nrequested this token.",
-      }),
-    ),
-    exp: z.optional(
-      z.coerce
-        .bigint()
-        .min(BigInt("-9223372036854775808"), {
-          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-        })
-        .max(BigInt("9223372036854775807"), {
-          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-        })
-        .register(z.globalRegistry, {
-          description:
-            "Expires at is an integer timestamp, measured in the number of seconds\nsince January 1 1970 UTC, indicating when this token will expire.",
-        }),
-    ),
-    ext: z.optional(
-      z.record(z.string(), z.unknown()).register(z.globalRegistry, {
+      })
+      .optional(),
+    exp: z.coerce
+      .bigint()
+      .min(BigInt("-9223372036854775808"), {
+        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+      })
+      .max(BigInt("9223372036854775807"), {
+        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+      })
+      .register(z.globalRegistry, {
+        description:
+          "Expires at is an integer timestamp, measured in the number of seconds\nsince January 1 1970 UTC, indicating when this token will expire.",
+      })
+      .optional(),
+    ext: z
+      .record(z.string(), z.unknown())
+      .register(z.globalRegistry, {
         description: "Extra is arbitrary data set by the session.",
-      }),
-    ),
-    iat: z.optional(
-      z.coerce
-        .bigint()
-        .min(BigInt("-9223372036854775808"), {
-          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-        })
-        .max(BigInt("9223372036854775807"), {
-          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-        })
-        .register(z.globalRegistry, {
-          description:
-            "Issued at is an integer timestamp, measured in the number of seconds\nsince January 1 1970 UTC, indicating when this token was\noriginally issued.",
-        }),
-    ),
-    iss: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    iat: z.coerce
+      .bigint()
+      .min(BigInt("-9223372036854775808"), {
+        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+      })
+      .max(BigInt("9223372036854775807"), {
+        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+      })
+      .register(z.globalRegistry, {
+        description:
+          "Issued at is an integer timestamp, measured in the number of seconds\nsince January 1 1970 UTC, indicating when this token was\noriginally issued.",
+      })
+      .optional(),
+    iss: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "IssuerURL is a string representing the issuer of this token",
-      }),
-    ),
-    nbf: z.optional(
-      z.coerce
-        .bigint()
-        .min(BigInt("-9223372036854775808"), {
-          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-        })
-        .max(BigInt("9223372036854775807"), {
-          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-        })
-        .register(z.globalRegistry, {
-          description:
-            "NotBefore is an integer timestamp, measured in the number of seconds\nsince January 1 1970 UTC, indicating when this token is not to be\nused before.",
-        }),
-    ),
-    obfuscated_subject: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    nbf: z.coerce
+      .bigint()
+      .min(BigInt("-9223372036854775808"), {
+        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+      })
+      .max(BigInt("9223372036854775807"), {
+        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+      })
+      .register(z.globalRegistry, {
+        description:
+          "NotBefore is an integer timestamp, measured in the number of seconds\nsince January 1 1970 UTC, indicating when this token is not to be\nused before.",
+      })
+      .optional(),
+    obfuscated_subject: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           'ObfuscatedSubject is set when the subject identifier algorithm was set to "pairwise" during authorization.\nIt is the `sub` value of the ID Token that was issued.',
-      }),
-    ),
-    scope: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    scope: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "Scope is a JSON string containing a space-separated list of\nscopes associated with this token.",
-      }),
-    ),
-    sub: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    sub: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "Subject of the token, as defined in JWT [RFC7519].\nUsually a machine-readable identifier of the resource owner who\nauthorized this token.",
-      }),
-    ),
-    token_type: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    token_type: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "TokenType is the introspected token's type, typically `Bearer`.",
-      }),
-    ),
-    token_use: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    token_use: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "TokenUse is the introspected token's use, for example `access_token` or `refresh_token`.",
-      }),
-    ),
-    username: z.optional(
-      z.string().register(z.globalRegistry, {
+      })
+      .optional(),
+    username: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "Username is a human-readable identifier for the resource owner who\nauthorized this token.",
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description:
@@ -893,16 +958,101 @@ export const IntrospectedOAuth2TokenSchema = z
  * The health status of the service.
  */
 export const HealthStatusSchema = z.object({
-  status: z.optional(
-    z.string().register(z.globalRegistry, {
+  status: z
+    .string()
+    .register(z.globalRegistry, {
       description: 'Status always contains "ok".',
-    }),
-  ),
+    })
+    .optional(),
 });
 
 export const GenericErrorSchema = z.object({
-  code: z.optional(
-    z.coerce
+  code: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    })
+    .register(z.globalRegistry, {
+      description: "The status code",
+    })
+    .optional(),
+  debug: z
+    .string()
+    .register(z.globalRegistry, {
+      description:
+        "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
+    })
+    .optional(),
+  details: z
+    .unknown()
+    .register(z.globalRegistry, {
+      description: "Further error details",
+    })
+    .optional(),
+  id: z
+    .string()
+    .register(z.globalRegistry, {
+      description:
+        "The error ID\n\nUseful when trying to identify various errors in application logic.",
+    })
+    .optional(),
+  message: z.string().register(z.globalRegistry, {
+    description: "Error message\n\nThe error's message.",
+  }),
+  reason: z
+    .string()
+    .register(z.globalRegistry, {
+      description: "A human-readable reason for the error",
+    })
+    .optional(),
+  request: z
+    .string()
+    .register(z.globalRegistry, {
+      description:
+        "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
+    })
+    .optional(),
+  status: z
+    .string()
+    .register(z.globalRegistry, {
+      description: "The status description",
+    })
+    .optional(),
+});
+
+/**
+ * Error
+ */
+export const ErrorOAuth2Schema = z
+  .object({
+    error: z
+      .string()
+      .register(z.globalRegistry, {
+        description: "Error",
+      })
+      .optional(),
+    error_debug: z
+      .string()
+      .register(z.globalRegistry, {
+        description: "Error Debug Information\n\nOnly available in dev mode.",
+      })
+      .optional(),
+    error_description: z
+      .string()
+      .register(z.globalRegistry, {
+        description: "Error Description",
+      })
+      .optional(),
+    error_hint: z
+      .string()
+      .register(z.globalRegistry, {
+        description: "Error Hint\n\nHelps the user identify the error cause.",
+      })
+      .optional(),
+    status_code: z.coerce
       .bigint()
       .min(BigInt("-9223372036854775808"), {
         error: "Invalid value: Expected int64 to be >= -9223372036854775808",
@@ -911,85 +1061,9 @@ export const GenericErrorSchema = z.object({
         error: "Invalid value: Expected int64 to be <= 9223372036854775807",
       })
       .register(z.globalRegistry, {
-        description: "The status code",
-      }),
-  ),
-  debug: z.optional(
-    z.string().register(z.globalRegistry, {
-      description:
-        "Debug information\n\nThis field is often not exposed to protect against leaking\nsensitive information.",
-    }),
-  ),
-  details: z.optional(
-    z.unknown().register(z.globalRegistry, {
-      description: "Further error details",
-    }),
-  ),
-  id: z.optional(
-    z.string().register(z.globalRegistry, {
-      description:
-        "The error ID\n\nUseful when trying to identify various errors in application logic.",
-    }),
-  ),
-  message: z.string().register(z.globalRegistry, {
-    description: "Error message\n\nThe error's message.",
-  }),
-  reason: z.optional(
-    z.string().register(z.globalRegistry, {
-      description: "A human-readable reason for the error",
-    }),
-  ),
-  request: z.optional(
-    z.string().register(z.globalRegistry, {
-      description:
-        "The request ID\n\nThe request ID is often exposed internally in order to trace\nerrors across service architectures. This is often a UUID.",
-    }),
-  ),
-  status: z.optional(
-    z.string().register(z.globalRegistry, {
-      description: "The status description",
-    }),
-  ),
-});
-
-/**
- * Error
- */
-export const ErrorOAuth2Schema = z
-  .object({
-    error: z.optional(
-      z.string().register(z.globalRegistry, {
-        description: "Error",
-      }),
-    ),
-    error_debug: z.optional(
-      z.string().register(z.globalRegistry, {
-        description: "Error Debug Information\n\nOnly available in dev mode.",
-      }),
-    ),
-    error_description: z.optional(
-      z.string().register(z.globalRegistry, {
-        description: "Error Description",
-      }),
-    ),
-    error_hint: z.optional(
-      z.string().register(z.globalRegistry, {
-        description: "Error Hint\n\nHelps the user identify the error cause.",
-      }),
-    ),
-    status_code: z.optional(
-      z.coerce
-        .bigint()
-        .min(BigInt("-9223372036854775808"), {
-          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-        })
-        .max(BigInt("9223372036854775807"), {
-          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-        })
-        .register(z.globalRegistry, {
-          description: "HTTP Status Code",
-        }),
-    ),
+        description: "HTTP Status Code",
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "Error",
@@ -1020,52 +1094,56 @@ export const CreateJsonWebKeySetSchema = z
  * HandledLoginRequest is the request payload used to accept a login request.
  */
 export const AcceptOAuth2LoginRequestSchema = z.object({
-  acr: z.optional(
-    z.string().register(z.globalRegistry, {
+  acr: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "ACR sets the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it\nto express that, for example, a user authenticated using two factor authentication.",
-    }),
-  ),
-  amr: z.optional(StringSliceJsonFormatSchema),
-  context: z.optional(JsonRawMessageSchema),
-  extend_session_lifespan: z.optional(
-    z.boolean().register(z.globalRegistry, {
+    })
+    .optional(),
+  amr: StringSliceJsonFormatSchema.optional(),
+  context: JsonRawMessageSchema.optional(),
+  extend_session_lifespan: z
+    .boolean()
+    .register(z.globalRegistry, {
       description:
         "Extend OAuth2 authentication session lifespan\n\nIf set to `true`, the OAuth2 authentication cookie lifespan is extended. This is for example useful if you want the user to be able to use `prompt=none` continuously.\n\nThis value can only be set to `true` if the user has an authentication, which is the case if the `skip` value is `true`.",
-    }),
-  ),
-  force_subject_identifier: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  force_subject_identifier: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         'ForceSubjectIdentifier forces the "pairwise" user ID of the end-user that authenticated. The "pairwise" user ID refers to the\n(Pairwise Identifier Algorithm)[http://openid.net/specs/openid-connect-core-1_0.html#PairwiseAlg] of the OpenID\nConnect specification. It allows you to set an obfuscated subject ("user") identifier that is unique to the client.\n\nPlease note that this changes the user ID on endpoint /userinfo and sub claim of the ID Token. It does not change the\nsub claim in the OAuth 2.0 Introspection.\n\nPer default, ORY Hydra handles this value with its own algorithm. In case you want to set this yourself\nyou can use this field. Please note that setting this field has no effect if `pairwise` is not configured in\nORY Hydra or the OAuth 2.0 Client does not expect a pairwise identifier (set via `subject_type` key in the client\'s\nconfiguration).\n\nPlease also be aware that ORY Hydra is unable to properly compute this value during authentication. This implies\nthat you have to compute this value on every authentication process (probably depending on the client ID or some\nother unique value).\n\nIf you fail to compute the proper value, then authentication processes which have id_token_hint set might fail.',
-    }),
-  ),
-  identity_provider_session_id: z.optional(
-    z.string().register(z.globalRegistry, {
+    })
+    .optional(),
+  identity_provider_session_id: z
+    .string()
+    .register(z.globalRegistry, {
       description:
         "IdentityProviderSessionID is the session ID of the end-user that authenticated.\nIf specified, we will use this value to propagate the logout.",
-    }),
-  ),
-  remember: z.optional(
-    z.boolean().register(z.globalRegistry, {
+    })
+    .optional(),
+  remember: z
+    .boolean()
+    .register(z.globalRegistry, {
       description:
         "Remember, if set to true, tells ORY Hydra to remember this user by telling the user agent (browser) to store\na cookie with authentication data. If the same user performs another OAuth 2.0 Authorization Request, he/she\nwill not be asked to log in again.",
-    }),
-  ),
-  remember_for: z.optional(
-    z.coerce
-      .bigint()
-      .min(BigInt("-9223372036854775808"), {
-        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-      })
-      .max(BigInt("9223372036854775807"), {
-        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-      })
-      .register(z.globalRegistry, {
-        description:
-          "RememberFor sets how long the authentication should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered for the duration of the browser session (using a session cookie).",
-      }),
-  ),
+    })
+    .optional(),
+  remember_for: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    })
+    .register(z.globalRegistry, {
+      description:
+        "RememberFor sets how long the authentication should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered for the duration of the browser session (using a session cookie).",
+    })
+    .optional(),
   subject: z.string().register(z.globalRegistry, {
     description: "Subject is the user ID of the end-user that authenticated.",
   }),
@@ -1075,70 +1153,70 @@ export const AcceptOAuth2LoginRequestSchema = z.object({
  * The request payload used to accept a consent request.
  */
 export const AcceptOAuth2ConsentRequestSchema = z.object({
-  context: z.optional(JsonRawMessageSchema),
-  grant_access_token_audience: z.optional(StringSliceJsonFormatSchema),
-  grant_scope: z.optional(StringSliceJsonFormatSchema),
-  handled_at: z.optional(NullTimeSchema),
-  remember: z.optional(
-    z.boolean().register(z.globalRegistry, {
+  context: JsonRawMessageSchema.optional(),
+  grant_access_token_audience: StringSliceJsonFormatSchema.optional(),
+  grant_scope: StringSliceJsonFormatSchema.optional(),
+  handled_at: NullTimeSchema.optional(),
+  remember: z
+    .boolean()
+    .register(z.globalRegistry, {
       description:
         "Remember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same\nclient asks the same user for the same, or a subset of, scope.",
-    }),
-  ),
-  remember_for: z.optional(
-    z.coerce
-      .bigint()
-      .min(BigInt("-9223372036854775808"), {
-        error: "Invalid value: Expected int64 to be >= -9223372036854775808",
-      })
-      .max(BigInt("9223372036854775807"), {
-        error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-      })
-      .register(z.globalRegistry, {
-        description:
-          "RememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered indefinitely.",
-      }),
-  ),
-  session: z.optional(AcceptOAuth2ConsentRequestSessionSchema),
+    })
+    .optional(),
+  remember_for: z.coerce
+    .bigint()
+    .min(BigInt("-9223372036854775808"), {
+      error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+    })
+    .max(BigInt("9223372036854775807"), {
+      error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+    })
+    .register(z.globalRegistry, {
+      description:
+        "RememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the\nauthorization will be remembered indefinitely.",
+    })
+    .optional(),
+  session: AcceptOAuth2ConsentRequestSessionSchema.optional(),
 });
 
 export const ListOAuth2ClientsRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(
-    z.object({
-      page_size: z
-        .optional(
-          z.coerce
-            .bigint()
-            .gte(BigInt(1))
-            .lte(BigInt(500))
-            .register(z.globalRegistry, {
-              description:
-                "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
-            }),
-        )
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z
+    .object({
+      page_size: z.coerce
+        .bigint()
+        .gte(BigInt(1))
+        .lte(BigInt(500))
+        .register(z.globalRegistry, {
+          description:
+            "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+        })
+        .optional()
         .default(BigInt(250)),
       page_token: z
-        .optional(
-          z.string().register(z.globalRegistry, {
-            description:
-              "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
-          }),
-        )
+        .string()
+        .register(z.globalRegistry, {
+          description:
+            "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+        })
+        .optional()
         .default("1"),
-      client_name: z.optional(
-        z.string().register(z.globalRegistry, {
+      client_name: z
+        .string()
+        .register(z.globalRegistry, {
           description: "The name of the clients to filter by.",
-        }),
-      ),
-      owner: z.optional(
-        z.string().register(z.globalRegistry, {
+        })
+        .optional(),
+      owner: z
+        .string()
+        .register(z.globalRegistry, {
           description: "The owner of the clients to filter by.",
-        }),
-      ),
-    }),
-  ),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -1152,8 +1230,8 @@ export const ListOAuth2ClientsResponseSchema = z
 
 export const CreateOAuth2ClientRequestSchema = z.object({
   body: OAuth2ClientSchema,
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -1162,13 +1240,13 @@ export const CreateOAuth2ClientRequestSchema = z.object({
 export const CreateOAuth2ClientResponseSchema = OAuth2ClientSchema;
 
 export const DeleteOAuth2ClientRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     id: z.string().register(z.globalRegistry, {
       description: "The id of the OAuth 2.0 Client.",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1183,13 +1261,13 @@ export const DeleteOAuth2ClientResponseSchema = z
   });
 
 export const GetOAuth2ClientRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     id: z.string().register(z.globalRegistry, {
       description: "The id of the OAuth 2.0 Client.",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1204,7 +1282,7 @@ export const PatchOAuth2ClientRequestSchema = z.object({
       description: "The id of the OAuth 2.0 Client.",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1219,7 +1297,7 @@ export const SetOAuth2ClientRequestSchema = z.object({
       description: "OAuth 2.0 Client ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1228,13 +1306,13 @@ export const SetOAuth2ClientRequestSchema = z.object({
 export const SetOAuth2ClientResponseSchema = OAuth2ClientSchema;
 
 export const SetOAuth2ClientLifespansRequestSchema = z.object({
-  body: z.optional(OAuth2ClientTokenLifespansSchema),
+  body: OAuth2ClientTokenLifespansSchema.optional(),
   path: z.object({
     id: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Client ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1243,13 +1321,13 @@ export const SetOAuth2ClientLifespansRequestSchema = z.object({
 export const SetOAuth2ClientLifespansResponseSchema = OAuth2ClientSchema;
 
 export const DeleteJsonWebKeySetRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     set: z.string().register(z.globalRegistry, {
       description: "The JSON Web Key Set",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1264,13 +1342,13 @@ export const DeleteJsonWebKeySetResponseSchema = z
   });
 
 export const GetJsonWebKeySetRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     set: z.string().register(z.globalRegistry, {
       description: "JSON Web Key Set ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1285,7 +1363,7 @@ export const CreateJsonWebKeySetRequestSchema = z.object({
       description: "The JSON Web Key Set ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1294,13 +1372,13 @@ export const CreateJsonWebKeySetRequestSchema = z.object({
 export const CreateJsonWebKeySetResponseSchema = JsonWebKeySetSchema;
 
 export const SetJsonWebKeySetRequestSchema = z.object({
-  body: z.optional(JsonWebKeySetSchema),
+  body: JsonWebKeySetSchema.optional(),
   path: z.object({
     set: z.string().register(z.globalRegistry, {
       description: "The JSON Web Key Set ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1309,7 +1387,7 @@ export const SetJsonWebKeySetRequestSchema = z.object({
 export const SetJsonWebKeySetResponseSchema = JsonWebKeySetSchema;
 
 export const DeleteJsonWebKeyRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     set: z.string().register(z.globalRegistry, {
       description: "The JSON Web Key Set",
@@ -1318,7 +1396,7 @@ export const DeleteJsonWebKeyRequestSchema = z.object({
       description: "The JSON Web Key ID (kid)",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1333,7 +1411,7 @@ export const DeleteJsonWebKeyResponseSchema = z
   });
 
 export const GetJsonWebKeyRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     set: z.string().register(z.globalRegistry, {
       description: "JSON Web Key Set ID",
@@ -1342,7 +1420,7 @@ export const GetJsonWebKeyRequestSchema = z.object({
       description: "JSON Web Key ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1351,7 +1429,7 @@ export const GetJsonWebKeyRequestSchema = z.object({
 export const GetJsonWebKeyResponseSchema = JsonWebKeySetSchema;
 
 export const SetJsonWebKeyRequestSchema = z.object({
-  body: z.optional(JsonWebKeySchema),
+  body: JsonWebKeySchema.optional(),
   path: z.object({
     set: z.string().register(z.globalRegistry, {
       description: "The JSON Web Key Set ID",
@@ -1360,7 +1438,7 @@ export const SetJsonWebKeyRequestSchema = z.object({
       description: "JSON Web Key ID",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1369,8 +1447,8 @@ export const SetJsonWebKeyRequestSchema = z.object({
 export const SetJsonWebKeyResponseSchema = JsonWebKeySchema;
 
 export const GetOAuth2ConsentRequestRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     consent_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Consent Request Challenge",
@@ -1384,8 +1462,8 @@ export const GetOAuth2ConsentRequestRequestSchema = z.object({
 export const GetOAuth2ConsentRequestResponseSchema = OAuth2ConsentRequestSchema;
 
 export const AcceptOAuth2ConsentRequestRequestSchema = z.object({
-  body: z.optional(AcceptOAuth2ConsentRequestSchema),
-  path: z.optional(z.never()),
+  body: AcceptOAuth2ConsentRequestSchema.optional(),
+  path: z.never().optional(),
   query: z.object({
     consent_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Consent Request Challenge",
@@ -1399,8 +1477,8 @@ export const AcceptOAuth2ConsentRequestRequestSchema = z.object({
 export const AcceptOAuth2ConsentRequestResponseSchema = OAuth2RedirectToSchema;
 
 export const RejectOAuth2ConsentRequestRequestSchema = z.object({
-  body: z.optional(RejectOAuth2RequestSchema),
-  path: z.optional(z.never()),
+  body: RejectOAuth2RequestSchema.optional(),
+  path: z.never().optional(),
   query: z.object({
     consent_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Consent Request Challenge",
@@ -1414,8 +1492,8 @@ export const RejectOAuth2ConsentRequestRequestSchema = z.object({
 export const RejectOAuth2ConsentRequestResponseSchema = OAuth2RedirectToSchema;
 
 export const GetOAuth2LoginRequestRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     login_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Login Request Challenge",
@@ -1429,8 +1507,8 @@ export const GetOAuth2LoginRequestRequestSchema = z.object({
 export const GetOAuth2LoginRequestResponseSchema = OAuth2LoginRequestSchema;
 
 export const AcceptOAuth2LoginRequestRequestSchema = z.object({
-  body: z.optional(AcceptOAuth2LoginRequestSchema),
-  path: z.optional(z.never()),
+  body: AcceptOAuth2LoginRequestSchema.optional(),
+  path: z.never().optional(),
   query: z.object({
     login_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Login Request Challenge",
@@ -1444,8 +1522,8 @@ export const AcceptOAuth2LoginRequestRequestSchema = z.object({
 export const AcceptOAuth2LoginRequestResponseSchema = OAuth2RedirectToSchema;
 
 export const RejectOAuth2LoginRequestRequestSchema = z.object({
-  body: z.optional(RejectOAuth2RequestSchema),
-  path: z.optional(z.never()),
+  body: RejectOAuth2RequestSchema.optional(),
+  path: z.never().optional(),
   query: z.object({
     login_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Login Request Challenge",
@@ -1459,8 +1537,8 @@ export const RejectOAuth2LoginRequestRequestSchema = z.object({
 export const RejectOAuth2LoginRequestResponseSchema = OAuth2RedirectToSchema;
 
 export const GetOAuth2LogoutRequestRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     logout_challenge: z.string(),
   }),
@@ -1472,8 +1550,8 @@ export const GetOAuth2LogoutRequestRequestSchema = z.object({
 export const GetOAuth2LogoutRequestResponseSchema = OAuth2LogoutRequestSchema;
 
 export const AcceptOAuth2LogoutRequestRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     logout_challenge: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Logout Request Challenge",
@@ -1487,8 +1565,8 @@ export const AcceptOAuth2LogoutRequestRequestSchema = z.object({
 export const AcceptOAuth2LogoutRequestResponseSchema = OAuth2RedirectToSchema;
 
 export const RejectOAuth2LogoutRequestRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     logout_challenge: z.string(),
   }),
@@ -1506,25 +1584,27 @@ export const RejectOAuth2LogoutRequestResponseSchema = z
   });
 
 export const RevokeOAuth2ConsentSessionsRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     subject: z.string().register(z.globalRegistry, {
       description:
         "OAuth 2.0 Consent Subject\n\nThe subject whose consent sessions should be deleted.",
     }),
-    client: z.optional(
-      z.string().register(z.globalRegistry, {
+    client: z
+      .string()
+      .register(z.globalRegistry, {
         description:
           "OAuth 2.0 Client ID\n\nIf set, deletes only those consent sessions that have been granted to the specified OAuth 2.0 Client ID.",
-      }),
-    ),
-    all: z.optional(
-      z.boolean().register(z.globalRegistry, {
+      })
+      .optional(),
+    all: z
+      .boolean()
+      .register(z.globalRegistry, {
         description:
           "Revoke All Consent Sessions\n\nIf set to `true` deletes all consent sessions by the Subject that have been granted.",
-      }),
-    ),
+      })
+      .optional(),
   }),
 });
 
@@ -1540,37 +1620,36 @@ export const RevokeOAuth2ConsentSessionsResponseSchema = z
   });
 
 export const ListOAuth2ConsentSessionsRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
-    page_size: z
-      .optional(
-        z.coerce
-          .bigint()
-          .gte(BigInt(1))
-          .lte(BigInt(500))
-          .register(z.globalRegistry, {
-            description:
-              "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
-          }),
-      )
+    page_size: z.coerce
+      .bigint()
+      .gte(BigInt(1))
+      .lte(BigInt(500))
+      .register(z.globalRegistry, {
+        description:
+          "Items per Page\n\nThis is the number of items per page to return.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+      })
+      .optional()
       .default(BigInt(250)),
     page_token: z
-      .optional(
-        z.string().register(z.globalRegistry, {
-          description:
-            "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
-        }),
-      )
+      .string()
+      .register(z.globalRegistry, {
+        description:
+          "Next Page Token\n\nThe next page token.\nFor details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).",
+      })
+      .optional()
       .default("1"),
     subject: z.string().register(z.globalRegistry, {
       description: "The subject to list the consent sessions for.",
     }),
-    login_session_id: z.optional(
-      z.string().register(z.globalRegistry, {
+    login_session_id: z
+      .string()
+      .register(z.globalRegistry, {
         description: "The login session id to list the consent sessions for.",
-      }),
-    ),
+      })
+      .optional(),
   }),
 });
 
@@ -1581,23 +1660,25 @@ export const ListOAuth2ConsentSessionsResponseSchema =
   OAuth2ConsentSessionsSchema;
 
 export const RevokeOAuth2LoginSessionsRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(
-    z.object({
-      subject: z.optional(
-        z.string().register(z.globalRegistry, {
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z
+    .object({
+      subject: z
+        .string()
+        .register(z.globalRegistry, {
           description:
             "OAuth 2.0 Subject\n\nThe subject to revoke authentication sessions for.",
-        }),
-      ),
-      sid: z.optional(
-        z.string().register(z.globalRegistry, {
+        })
+        .optional(),
+      sid: z
+        .string()
+        .register(z.globalRegistry, {
           description: "Login Session ID\n\nThe login session to revoke.",
-        }),
-      ),
-    }),
-  ),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -1612,22 +1693,23 @@ export const RevokeOAuth2LoginSessionsResponseSchema = z
   });
 
 export const IntrospectOAuth2TokenRequestSchema = z.object({
-  body: z.optional(
-    z.object({
-      scope: z.optional(
-        z.string().register(z.globalRegistry, {
+  body: z
+    .object({
+      scope: z
+        .string()
+        .register(z.globalRegistry, {
           description:
             "An optional, space separated list of required scopes. If the access token was not granted one of the\nscopes, the result of active will be false.",
-        }),
-      ),
+        })
+        .optional(),
       token: z.string().register(z.globalRegistry, {
         description:
           'The string value of the token. For access tokens, this\nis the "access_token" value returned from the token endpoint\ndefined in OAuth 2.0. For refresh tokens, this is the "refresh_token"\nvalue returned.',
       }),
-    }),
-  ),
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+    })
+    .optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -1637,8 +1719,8 @@ export const IntrospectOAuth2TokenResponseSchema =
   IntrospectedOAuth2TokenSchema;
 
 export const DeleteOAuth2TokenRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
   query: z.object({
     client_id: z.string().register(z.globalRegistry, {
       description: "OAuth 2.0 Client ID",
@@ -1658,40 +1740,37 @@ export const DeleteOAuth2TokenResponseSchema = z
   });
 
 export const ListTrustedOAuth2JwtGrantIssuersRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(
-    z.object({
-      MaxItems: z.optional(
-        z.coerce
-          .bigint()
-          .min(BigInt("-9223372036854775808"), {
-            error:
-              "Invalid value: Expected int64 to be >= -9223372036854775808",
-          })
-          .max(BigInt("9223372036854775807"), {
-            error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-          }),
-      ),
-      DefaultItems: z.optional(
-        z.coerce
-          .bigint()
-          .min(BigInt("-9223372036854775808"), {
-            error:
-              "Invalid value: Expected int64 to be >= -9223372036854775808",
-          })
-          .max(BigInt("9223372036854775807"), {
-            error: "Invalid value: Expected int64 to be <= 9223372036854775807",
-          }),
-      ),
-      issuer: z.optional(
-        z.string().register(z.globalRegistry, {
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z
+    .object({
+      MaxItems: z.coerce
+        .bigint()
+        .min(BigInt("-9223372036854775808"), {
+          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+        })
+        .max(BigInt("9223372036854775807"), {
+          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+        })
+        .optional(),
+      DefaultItems: z.coerce
+        .bigint()
+        .min(BigInt("-9223372036854775808"), {
+          error: "Invalid value: Expected int64 to be >= -9223372036854775808",
+        })
+        .max(BigInt("9223372036854775807"), {
+          error: "Invalid value: Expected int64 to be <= 9223372036854775807",
+        })
+        .optional(),
+      issuer: z
+        .string()
+        .register(z.globalRegistry, {
           description:
             'If optional "issuer" is supplied, only jwt-bearer grants with this issuer will be returned.',
-        }),
-      ),
-    }),
-  ),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 /**
@@ -1701,9 +1780,9 @@ export const ListTrustedOAuth2JwtGrantIssuersResponseSchema =
   TrustedOAuth2JwtGrantIssuersSchema;
 
 export const TrustOAuth2JwtGrantIssuerRequestSchema = z.object({
-  body: z.optional(TrustOAuth2JwtGrantIssuerSchema),
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+  body: TrustOAuth2JwtGrantIssuerSchema.optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -1713,13 +1792,13 @@ export const TrustOAuth2JwtGrantIssuerResponseSchema =
   TrustedOAuth2JwtGrantIssuerSchema;
 
 export const DeleteTrustedOAuth2JwtGrantIssuerRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     id: z.string().register(z.globalRegistry, {
       description: "The id of the desired grant",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1734,13 +1813,13 @@ export const DeleteTrustedOAuth2JwtGrantIssuerResponseSchema = z
   });
 
 export const GetTrustedOAuth2JwtGrantIssuerRequestSchema = z.object({
-  body: z.optional(z.never()),
+  body: z.never().optional(),
   path: z.object({
     id: z.string().register(z.globalRegistry, {
       description: "The id of the desired grant",
     }),
   }),
-  query: z.optional(z.never()),
+  query: z.never().optional(),
 });
 
 /**
@@ -1750,9 +1829,9 @@ export const GetTrustedOAuth2JwtGrantIssuerResponseSchema =
   TrustedOAuth2JwtGrantIssuerSchema;
 
 export const IsAliveRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -1761,9 +1840,9 @@ export const IsAliveRequestSchema = z.object({
 export const IsAliveResponseSchema = HealthStatusSchema;
 
 export const IsReadyRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -1771,20 +1850,21 @@ export const IsReadyRequestSchema = z.object({
  */
 export const IsReadyResponseSchema = z
   .object({
-    status: z.optional(
-      z.string().register(z.globalRegistry, {
+    status: z
+      .string()
+      .register(z.globalRegistry, {
         description: 'Always "ok".',
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "Ory Hydra is ready to accept requests.",
   });
 
 export const GetVersionRequestSchema = z.object({
-  body: z.optional(z.never()),
-  path: z.optional(z.never()),
-  query: z.optional(z.never()),
+  body: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
 });
 
 /**
@@ -1792,11 +1872,12 @@ export const GetVersionRequestSchema = z.object({
  */
 export const GetVersionResponseSchema = z
   .object({
-    version: z.optional(
-      z.string().register(z.globalRegistry, {
+    version: z
+      .string()
+      .register(z.globalRegistry, {
         description: "The version of Ory Hydra.",
-      }),
-    ),
+      })
+      .optional(),
   })
   .register(z.globalRegistry, {
     description: "Returns the Ory Hydra version.",
