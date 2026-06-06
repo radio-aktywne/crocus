@@ -5,11 +5,11 @@ import type {
   NotFoundInput,
   NotFoundMetadataInput,
   NotFoundMetadataUtilityInput,
-} from "../../types";
+} from "../types";
 
-import { Metadata } from "../../../isomorphic/metadata/components/metadata";
-import { createMetadata } from "../../../server/metadata/lib/create-metadata";
-import { MainNotFoundView } from "./not-found.view";
+import { Metadata } from "../../isomorphic/metadata/components/metadata";
+import { createMetadata } from "../../server/metadata/lib/create-metadata";
+import { RootNotFoundView } from "./not-found.view";
 
 async function getTitle({}: NotFoundMetadataUtilityInput = {}) {
   return msg({ message: "Not Found • crocus" });
@@ -21,13 +21,13 @@ export async function generateMetadata({}: NotFoundMetadataInput) {
   });
 }
 
-export default async function MainNotFound({}: NotFoundInput) {
+export default async function RootNotFound({}: NotFoundInput) {
   await connection();
 
   return (
     <>
       <Metadata title={await getTitle()} />
-      <MainNotFoundView />
+      <RootNotFoundView />
     </>
   );
 }

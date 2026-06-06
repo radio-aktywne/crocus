@@ -1,4 +1,4 @@
 export namespace Keys {
   export type Path = never;
-  export type Query = "foo";
+  export type Query = never;
 }
