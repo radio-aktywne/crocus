@@ -6,6 +6,7 @@ import { defaultShouldDehydrateQuery, matchQuery } from "@tanstack/react-query";
 import type { SerializedData } from "./types";
 
 import { getExecutionContext } from "../../../generic/lib/get-execution-context";
+import { constants } from "./constants";
 import { serializer } from "./vars";
 
 export function serialize(data: unknown) {
@@ -40,7 +41,7 @@ export function shouldRetryQuery(failureCount: number, error: unknown) {
   if (error instanceof ORPCError && error.status >= 400 && error.status < 500)
     return false;
 
-  return failureCount < 3;
+  return failureCount < constants.retries;
 }
 
 export async function invalidateQueriesForMutation(
