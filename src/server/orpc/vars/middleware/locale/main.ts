@@ -14,12 +14,12 @@ export const localeMiddleware = headersMiddleware.concat(
             executed: context.localeMiddleware.executed,
             locale: context.localeMiddleware.locale,
           },
-        } as LocaleMiddlewareOutputContext,
+        } satisfies LocaleMiddlewareOutputContext as LocaleMiddlewareOutputContext,
       });
 
-    const { locales } = getAcceptedLocales({
-      headers: context.headersMiddleware.headers,
-    });
+    const headers = context.headersMiddleware.headers;
+
+    const { locales } = getAcceptedLocales({ headers: headers });
     const { locale } = getSupportedLocale({ locales: locales });
 
     return next({
@@ -28,7 +28,7 @@ export const localeMiddleware = headersMiddleware.concat(
           executed: true,
           locale: locale,
         },
-      } as LocaleMiddlewareOutputContext,
+      } satisfies LocaleMiddlewareOutputContext as LocaleMiddlewareOutputContext,
     });
   },
 );

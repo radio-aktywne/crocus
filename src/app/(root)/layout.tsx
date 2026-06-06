@@ -23,6 +23,7 @@ import { ThemeProvider } from "../../isomorphic/theme/components/theme-provider"
 import { resolveLocale } from "../../server/localization/lib/resolve-locale";
 import { createMetadata } from "../../server/metadata/lib/create-metadata";
 import { createViewport } from "../../server/metadata/lib/create-viewport";
+import { getQueryClient } from "../../server/query/lib/get-query-client";
 import { constants } from "./constants";
 import "./layout.styles.css";
 import { RootLayoutView } from "./layout.view";
@@ -82,7 +83,8 @@ export default async function RootLayout({
 }: LayoutInput<Keys.Path, Keys.Slots>) {
   await connection();
 
-  const { locale, queryClient } = await resolveLocale();
+  const { queryClient } = getQueryClient();
+  const { locale } = await resolveLocale({ queryClient: queryClient });
 
   return (
     <html lang={locale} suppressHydrationWarning={true}>
