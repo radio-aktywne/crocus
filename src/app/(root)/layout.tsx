@@ -14,6 +14,7 @@ import type { Schemas } from "./schemas";
 import type { Keys } from "./types";
 
 import { ThemeScript } from "../../common/theme/components/theme-script";
+import { HistoryProvider } from "../../isomorphic/generic/components/history-provider";
 import { LocalizationProvider } from "../../isomorphic/localization/components/localization-provider";
 import { Metadata } from "../../isomorphic/metadata/components/metadata";
 import { MetadataProvider } from "../../isomorphic/metadata/components/metadata-provider";
@@ -93,26 +94,28 @@ export default async function RootLayout({
       </head>
       <body>
         <StateProvider>
-          <MetadataProvider>
-            <QueryProvider>
-              <HydrationBoundary state={dehydrate(queryClient)}>
-                <LocalizationProvider locale={locale}>
-                  <ThemeProvider
-                    colors={constants.colors.all}
-                    colorScheme={constants.colors.scheme}
-                    primaryColor={constants.colors.primary.name}
-                    primaryShade={constants.colors.primary.shade}
-                  >
-                    <Metadata
-                      description={await getDescription()}
-                      title={await getTitle()}
-                    />
-                    <RootLayoutView>{children}</RootLayoutView>
-                  </ThemeProvider>
-                </LocalizationProvider>
-              </HydrationBoundary>
-            </QueryProvider>
-          </MetadataProvider>
+          <HistoryProvider>
+            <MetadataProvider>
+              <QueryProvider>
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                  <LocalizationProvider locale={locale}>
+                    <ThemeProvider
+                      colors={constants.colors.all}
+                      colorScheme={constants.colors.scheme}
+                      primaryColor={constants.colors.primary.name}
+                      primaryShade={constants.colors.primary.shade}
+                    >
+                      <Metadata
+                        description={await getDescription()}
+                        title={await getTitle()}
+                      />
+                      <RootLayoutView>{children}</RootLayoutView>
+                    </ThemeProvider>
+                  </LocalizationProvider>
+                </HydrationBoundary>
+              </QueryProvider>
+            </MetadataProvider>
+          </HistoryProvider>
         </StateProvider>
       </body>
     </html>
