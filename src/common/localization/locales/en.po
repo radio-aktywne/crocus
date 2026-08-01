@@ -13,16 +13,16 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/client/test/components/test-widget/main.tsx:52
+#: src/client/test/components/test-widget/main.tsx:50
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
 
 #: src/app/(root)/(main)/default/page.tsx:20
-#: src/app/(root)/layout.tsx:40
+#: src/app/(root)/layout.tsx:41
 msgid "crocus"
 msgstr "crocus"
 
-#: src/client/test/components/test-widget/components/test-form/main.tsx:25
+#: src/client/test/components/test-widget/components/test-form/main.tsx:30
 msgid "Enter some value"
 msgstr "Enter some value"
 
@@ -43,8 +43,8 @@ msgstr "Error in OIDC flow"
 msgid "Info"
 msgstr "Info"
 
-#: src/client/test/components/test-widget/main.tsx:41
-#: src/client/test/components/test-widget/main.tsx:62
+#: src/client/test/components/test-widget/main.tsx:39
+#: src/client/test/components/test-widget/main.tsx:60
 msgid "Invalid input"
 msgstr "Invalid input"
 
@@ -64,7 +64,7 @@ msgstr "Retry"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/client/test/components/test-widget/components/test-form/main.tsx:30
+#: src/client/test/components/test-widget/components/test-form/main.tsx:36
 msgid "Submit"
 msgstr "Submit"
 
@@ -72,7 +72,7 @@ msgstr "Submit"
 msgid "Success"
 msgstr "Success"
 
-#: src/app/(root)/layout.tsx:34
+#: src/app/(root)/layout.tsx:35
 msgid "Users OIDC auth app 🪪"
 msgstr "Users OIDC auth app 🪪"
 
