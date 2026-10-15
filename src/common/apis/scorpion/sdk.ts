@@ -2,7 +2,9 @@
 
 import {
   type Client,
+  type ClientMeta,
   type Options as Options2,
+  type RequestResult,
   type TDataShape,
   urlSearchParamsBodySerializer,
 } from "./client";
@@ -13,6 +15,8 @@ import {
   AcceptOAuth2LoginRequestResponseSchema,
   AcceptOAuth2LogoutRequestRequestSchema,
   AcceptOAuth2LogoutRequestResponseSchema,
+  AcceptUserCodeRequestRequestSchema,
+  AcceptUserCodeRequestResponseSchema,
   CreateJsonWebKeySetRequestSchema,
   CreateJsonWebKeySetResponseSchema,
   CreateOAuth2ClientRequestSchema,
@@ -88,6 +92,9 @@ import type {
   AcceptOAuth2LogoutRequestErrors,
   AcceptOAuth2LogoutRequestRequest,
   AcceptOAuth2LogoutRequestResponses,
+  AcceptUserCodeRequestErrors,
+  AcceptUserCodeRequestRequest,
+  AcceptUserCodeRequestResponses,
   CreateJsonWebKeySetErrors,
   CreateJsonWebKeySetRequest,
   CreateJsonWebKeySetResponses,
@@ -188,7 +195,8 @@ import type {
 export type Options<
   TData extends TDataShape = TDataShape,
   ThrowOnError extends boolean = boolean,
-> = Options2<TData, ThrowOnError> & {
+  TResponse = unknown,
+> = Options2<TData, ThrowOnError, TResponse> & {
   /**
    * You can provide a client instance returned by `createClient()` instead of
    * individual options. This might be also useful if you want to implement a
@@ -199,7 +207,7 @@ export type Options<
    * You can pass arbitrary values through the `meta` object. This can be
    * used to access values that aren't defined as part of the SDK function.
    */
-  meta?: Record<string, unknown>;
+  meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
 class HeyApiClient {
@@ -231,7 +239,8 @@ class HeyApiRegistry<T> {
 }
 
 export class Sdk extends HeyApiClient {
-  public static readonly __registry = new HeyApiRegistry<Sdk>();
+  public static readonly __registry: HeyApiRegistry<Sdk> =
+    new HeyApiRegistry<Sdk>();
 
   constructor(args: { client: Client; key?: string }) {
     super(args);
@@ -246,7 +255,11 @@ export class Sdk extends HeyApiClient {
    */
   public listOAuth2Clients<ThrowOnError extends boolean = false>(
     options?: Options<ListOAuth2ClientsRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    ListOAuth2ClientsResponses,
+    ListOAuth2ClientsErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? this.client).get<
       ListOAuth2ClientsResponses,
       ListOAuth2ClientsErrors,
@@ -269,7 +282,11 @@ export class Sdk extends HeyApiClient {
    */
   public createOAuth2Client<ThrowOnError extends boolean = false>(
     options: Options<CreateOAuth2ClientRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateOAuth2ClientResponses,
+    CreateOAuth2ClientErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).post<
       CreateOAuth2ClientResponses,
       CreateOAuth2ClientErrors,
@@ -300,7 +317,11 @@ export class Sdk extends HeyApiClient {
    */
   public deleteOAuth2Client<ThrowOnError extends boolean = false>(
     options: Options<DeleteOAuth2ClientRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    DeleteOAuth2ClientResponses,
+    DeleteOAuth2ClientErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).delete<
       DeleteOAuth2ClientResponses,
       DeleteOAuth2ClientErrors,
@@ -325,7 +346,11 @@ export class Sdk extends HeyApiClient {
    */
   public getOAuth2Client<ThrowOnError extends boolean = false>(
     options: Options<GetOAuth2ClientRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetOAuth2ClientResponses,
+    GetOAuth2ClientErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       GetOAuth2ClientResponses,
       GetOAuth2ClientErrors,
@@ -352,7 +377,11 @@ export class Sdk extends HeyApiClient {
    */
   public patchOAuth2Client<ThrowOnError extends boolean = false>(
     options: Options<PatchOAuth2ClientRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    PatchOAuth2ClientResponses,
+    PatchOAuth2ClientErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).patch<
       PatchOAuth2ClientResponses,
       PatchOAuth2ClientErrors,
@@ -384,7 +413,11 @@ export class Sdk extends HeyApiClient {
    */
   public setOAuth2Client<ThrowOnError extends boolean = false>(
     options: Options<SetOAuth2ClientRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    SetOAuth2ClientResponses,
+    SetOAuth2ClientErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       SetOAuth2ClientResponses,
       SetOAuth2ClientErrors,
@@ -410,7 +443,11 @@ export class Sdk extends HeyApiClient {
    */
   public setOAuth2ClientLifespans<ThrowOnError extends boolean = false>(
     options: Options<SetOAuth2ClientLifespansRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    SetOAuth2ClientLifespansResponses,
+    SetOAuth2ClientLifespansErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       SetOAuth2ClientLifespansResponses,
       SetOAuth2ClientLifespansErrors,
@@ -438,7 +475,11 @@ export class Sdk extends HeyApiClient {
    */
   public deleteJsonWebKeySet<ThrowOnError extends boolean = false>(
     options: Options<DeleteJsonWebKeySetRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    DeleteJsonWebKeySetResponses,
+    DeleteJsonWebKeySetErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).delete<
       DeleteJsonWebKeySetResponses,
       DeleteJsonWebKeySetErrors,
@@ -462,7 +503,11 @@ export class Sdk extends HeyApiClient {
    */
   public getJsonWebKeySet<ThrowOnError extends boolean = false>(
     options: Options<GetJsonWebKeySetRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetJsonWebKeySetResponses,
+    GetJsonWebKeySetErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       GetJsonWebKeySetResponses,
       GetJsonWebKeySetErrors,
@@ -480,13 +525,17 @@ export class Sdk extends HeyApiClient {
   /**
    * Create JSON Web Key
    *
-   * This endpoint is capable of generating JSON Web Key Sets for you. There a different strategies available, such as symmetric cryptographic keys (HS256, HS512) and asymetric cryptographic keys (RS256, ECDSA). If the specified JSON Web Key Set does not exist, it will be created.
+   * This endpoint is capable of generating JSON Web Key Sets for you. There are different strategies available, such as symmetric cryptographic keys (HS256, HS512) and asymmetric cryptographic keys (RS256, ECDSA). If the specified JSON Web Key Set does not exist, it will be created.
    *
    * A JSON Web Key (JWK) is a JavaScript Object Notation (JSON) data structure that represents a cryptographic key. A JWK Set is a JSON data structure that represents a set of JWKs. A JSON Web Key is identified by its set and key id. ORY Hydra uses this functionality to store cryptographic keys used for TLS and JSON Web Tokens (such as OpenID Connect ID tokens), and allows storing user-defined keys as well.
    */
   public createJsonWebKeySet<ThrowOnError extends boolean = false>(
     options: Options<CreateJsonWebKeySetRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateJsonWebKeySetResponses,
+    CreateJsonWebKeySetErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).post<
       CreateJsonWebKeySetResponses,
       CreateJsonWebKeySetErrors,
@@ -514,7 +563,11 @@ export class Sdk extends HeyApiClient {
    */
   public setJsonWebKeySet<ThrowOnError extends boolean = false>(
     options: Options<SetJsonWebKeySetRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    SetJsonWebKeySetResponses,
+    SetJsonWebKeySetErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       SetJsonWebKeySetResponses,
       SetJsonWebKeySetErrors,
@@ -545,7 +598,11 @@ export class Sdk extends HeyApiClient {
    */
   public deleteJsonWebKey<ThrowOnError extends boolean = false>(
     options: Options<DeleteJsonWebKeyRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    DeleteJsonWebKeyResponses,
+    DeleteJsonWebKeyErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).delete<
       DeleteJsonWebKeyResponses,
       DeleteJsonWebKeyErrors,
@@ -567,7 +624,7 @@ export class Sdk extends HeyApiClient {
    */
   public getJsonWebKey<ThrowOnError extends boolean = false>(
     options: Options<GetJsonWebKeyRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<GetJsonWebKeyResponses, GetJsonWebKeyErrors, ThrowOnError> {
     return (options.client ?? this.client).get<
       GetJsonWebKeyResponses,
       GetJsonWebKeyErrors,
@@ -591,7 +648,7 @@ export class Sdk extends HeyApiClient {
    */
   public setJsonWebKey<ThrowOnError extends boolean = false>(
     options: Options<SetJsonWebKeyRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<SetJsonWebKeyResponses, SetJsonWebKeyErrors, ThrowOnError> {
     return (options.client ?? this.client).put<
       SetJsonWebKeyResponses,
       SetJsonWebKeyErrors,
@@ -626,7 +683,11 @@ export class Sdk extends HeyApiClient {
    */
   public getOAuth2ConsentRequest<ThrowOnError extends boolean = false>(
     options: Options<GetOAuth2ConsentRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetOAuth2ConsentRequestResponses,
+    GetOAuth2ConsentRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       GetOAuth2ConsentRequestResponses,
       GetOAuth2ConsentRequestErrors,
@@ -663,7 +724,11 @@ export class Sdk extends HeyApiClient {
    */
   public acceptOAuth2ConsentRequest<ThrowOnError extends boolean = false>(
     options: Options<AcceptOAuth2ConsentRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    AcceptOAuth2ConsentRequestResponses,
+    AcceptOAuth2ConsentRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       AcceptOAuth2ConsentRequestResponses,
       AcceptOAuth2ConsentRequestErrors,
@@ -703,7 +768,11 @@ export class Sdk extends HeyApiClient {
    */
   public rejectOAuth2ConsentRequest<ThrowOnError extends boolean = false>(
     options: Options<RejectOAuth2ConsentRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    RejectOAuth2ConsentRequestResponses,
+    RejectOAuth2ConsentRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       RejectOAuth2ConsentRequestResponses,
       RejectOAuth2ConsentRequestErrors,
@@ -714,6 +783,36 @@ export class Sdk extends HeyApiClient {
       responseValidator: async (data) =>
         await RejectOAuth2ConsentRequestResponseSchema.parseAsync(data),
       url: "/admin/oauth2/auth/requests/consent/reject",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * Accepts a device grant user_code request
+   *
+   * Accepts a device grant user_code request
+   */
+  public acceptUserCodeRequest<ThrowOnError extends boolean = false>(
+    options: Options<AcceptUserCodeRequestRequest, ThrowOnError>,
+  ): RequestResult<
+    AcceptUserCodeRequestResponses,
+    AcceptUserCodeRequestErrors,
+    ThrowOnError
+  > {
+    return (options.client ?? this.client).put<
+      AcceptUserCodeRequestResponses,
+      AcceptUserCodeRequestErrors,
+      ThrowOnError
+    >({
+      requestValidator: async (data) =>
+        await AcceptUserCodeRequestRequestSchema.parseAsync(data),
+      responseValidator: async (data) =>
+        await AcceptUserCodeRequestResponseSchema.parseAsync(data),
+      url: "/admin/oauth2/auth/requests/device/accept",
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -737,7 +836,11 @@ export class Sdk extends HeyApiClient {
    */
   public getOAuth2LoginRequest<ThrowOnError extends boolean = false>(
     options: Options<GetOAuth2LoginRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetOAuth2LoginRequestResponses,
+    GetOAuth2LoginRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       GetOAuth2LoginRequestResponses,
       GetOAuth2LoginRequestErrors,
@@ -769,7 +872,11 @@ export class Sdk extends HeyApiClient {
    */
   public acceptOAuth2LoginRequest<ThrowOnError extends boolean = false>(
     options: Options<AcceptOAuth2LoginRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    AcceptOAuth2LoginRequestResponses,
+    AcceptOAuth2LoginRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       AcceptOAuth2LoginRequestResponses,
       AcceptOAuth2LoginRequestErrors,
@@ -804,7 +911,11 @@ export class Sdk extends HeyApiClient {
    */
   public rejectOAuth2LoginRequest<ThrowOnError extends boolean = false>(
     options: Options<RejectOAuth2LoginRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    RejectOAuth2LoginRequestResponses,
+    RejectOAuth2LoginRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       RejectOAuth2LoginRequestResponses,
       RejectOAuth2LoginRequestErrors,
@@ -830,7 +941,11 @@ export class Sdk extends HeyApiClient {
    */
   public getOAuth2LogoutRequest<ThrowOnError extends boolean = false>(
     options: Options<GetOAuth2LogoutRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetOAuth2LogoutRequestResponses,
+    GetOAuth2LogoutRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       GetOAuth2LogoutRequestResponses,
       GetOAuth2LogoutRequestErrors,
@@ -854,7 +969,11 @@ export class Sdk extends HeyApiClient {
    */
   public acceptOAuth2LogoutRequest<ThrowOnError extends boolean = false>(
     options: Options<AcceptOAuth2LogoutRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    AcceptOAuth2LogoutRequestResponses,
+    AcceptOAuth2LogoutRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       AcceptOAuth2LogoutRequestResponses,
       AcceptOAuth2LogoutRequestErrors,
@@ -879,7 +998,11 @@ export class Sdk extends HeyApiClient {
    */
   public rejectOAuth2LogoutRequest<ThrowOnError extends boolean = false>(
     options: Options<RejectOAuth2LogoutRequestRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    RejectOAuth2LogoutRequestResponses,
+    RejectOAuth2LogoutRequestErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).put<
       RejectOAuth2LogoutRequestResponses,
       RejectOAuth2LogoutRequestErrors,
@@ -901,9 +1024,13 @@ export class Sdk extends HeyApiClient {
    * associated OAuth 2.0 Access Tokens. You may also only revoke sessions for a specific OAuth 2.0 Client ID.
    */
   public revokeOAuth2ConsentSessions<ThrowOnError extends boolean = false>(
-    options: Options<RevokeOAuth2ConsentSessionsRequest, ThrowOnError>,
-  ) {
-    return (options.client ?? this.client).delete<
+    options?: Options<RevokeOAuth2ConsentSessionsRequest, ThrowOnError>,
+  ): RequestResult<
+    RevokeOAuth2ConsentSessionsResponses,
+    RevokeOAuth2ConsentSessionsErrors,
+    ThrowOnError
+  > {
+    return (options?.client ?? this.client).delete<
       RevokeOAuth2ConsentSessionsResponses,
       RevokeOAuth2ConsentSessionsErrors,
       ThrowOnError
@@ -926,7 +1053,11 @@ export class Sdk extends HeyApiClient {
    */
   public listOAuth2ConsentSessions<ThrowOnError extends boolean = false>(
     options: Options<ListOAuth2ConsentSessionsRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    ListOAuth2ConsentSessionsResponses,
+    ListOAuth2ConsentSessionsErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       ListOAuth2ConsentSessionsResponses,
       ListOAuth2ConsentSessionsErrors,
@@ -957,7 +1088,11 @@ export class Sdk extends HeyApiClient {
    */
   public revokeOAuth2LoginSessions<ThrowOnError extends boolean = false>(
     options?: Options<RevokeOAuth2LoginSessionsRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    RevokeOAuth2LoginSessionsResponses,
+    RevokeOAuth2LoginSessionsErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? this.client).delete<
       RevokeOAuth2LoginSessionsResponses,
       RevokeOAuth2LoginSessionsErrors,
@@ -981,7 +1116,11 @@ export class Sdk extends HeyApiClient {
    */
   public introspectOAuth2Token<ThrowOnError extends boolean = false>(
     options?: Options<IntrospectOAuth2TokenRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    IntrospectOAuth2TokenResponses,
+    IntrospectOAuth2TokenErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? this.client).post<
       IntrospectOAuth2TokenResponses,
       IntrospectOAuth2TokenErrors,
@@ -1008,7 +1147,11 @@ export class Sdk extends HeyApiClient {
    */
   public deleteOAuth2Token<ThrowOnError extends boolean = false>(
     options: Options<DeleteOAuth2TokenRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    DeleteOAuth2TokenResponses,
+    DeleteOAuth2TokenErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).delete<
       DeleteOAuth2TokenResponses,
       DeleteOAuth2TokenErrors,
@@ -1030,7 +1173,11 @@ export class Sdk extends HeyApiClient {
    */
   public listTrustedOAuth2JwtGrantIssuers<ThrowOnError extends boolean = false>(
     options?: Options<ListTrustedOAuth2JwtGrantIssuersRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    ListTrustedOAuth2JwtGrantIssuersResponses,
+    ListTrustedOAuth2JwtGrantIssuersErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? this.client).get<
       ListTrustedOAuth2JwtGrantIssuersResponses,
       ListTrustedOAuth2JwtGrantIssuersErrors,
@@ -1054,7 +1201,11 @@ export class Sdk extends HeyApiClient {
    */
   public trustOAuth2JwtGrantIssuer<ThrowOnError extends boolean = false>(
     options?: Options<TrustOAuth2JwtGrantIssuerRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    TrustOAuth2JwtGrantIssuerResponses,
+    TrustOAuth2JwtGrantIssuerErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? this.client).post<
       TrustOAuth2JwtGrantIssuerResponses,
       TrustOAuth2JwtGrantIssuerErrors,
@@ -1084,7 +1235,13 @@ export class Sdk extends HeyApiClient {
    */
   public deleteTrustedOAuth2JwtGrantIssuer<
     ThrowOnError extends boolean = false,
-  >(options: Options<DeleteTrustedOAuth2JwtGrantIssuerRequest, ThrowOnError>) {
+  >(
+    options: Options<DeleteTrustedOAuth2JwtGrantIssuerRequest, ThrowOnError>,
+  ): RequestResult<
+    DeleteTrustedOAuth2JwtGrantIssuerResponses,
+    DeleteTrustedOAuth2JwtGrantIssuerErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).delete<
       DeleteTrustedOAuth2JwtGrantIssuerResponses,
       DeleteTrustedOAuth2JwtGrantIssuerErrors,
@@ -1107,7 +1264,11 @@ export class Sdk extends HeyApiClient {
    */
   public getTrustedOAuth2JwtGrantIssuer<ThrowOnError extends boolean = false>(
     options: Options<GetTrustedOAuth2JwtGrantIssuerRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetTrustedOAuth2JwtGrantIssuerResponses,
+    GetTrustedOAuth2JwtGrantIssuerErrors,
+    ThrowOnError
+  > {
     return (options.client ?? this.client).get<
       GetTrustedOAuth2JwtGrantIssuerResponses,
       GetTrustedOAuth2JwtGrantIssuerErrors,
@@ -1136,7 +1297,7 @@ export class Sdk extends HeyApiClient {
    */
   public isAlive<ThrowOnError extends boolean = false>(
     options?: Options<IsAliveRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<IsAliveResponses, IsAliveErrors, ThrowOnError> {
     return (options?.client ?? this.client).get<
       IsAliveResponses,
       IsAliveErrors,
@@ -1165,7 +1326,7 @@ export class Sdk extends HeyApiClient {
    */
   public isReady<ThrowOnError extends boolean = false>(
     options?: Options<IsReadyRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<IsReadyResponses, IsReadyErrors, ThrowOnError> {
     return (options?.client ?? this.client).get<
       IsReadyResponses,
       IsReadyErrors,
@@ -1193,7 +1354,7 @@ export class Sdk extends HeyApiClient {
    */
   public getVersion<ThrowOnError extends boolean = false>(
     options?: Options<GetVersionRequest, ThrowOnError>,
-  ) {
+  ): RequestResult<GetVersionResponses, unknown, ThrowOnError> {
     return (options?.client ?? this.client).get<
       GetVersionResponses,
       unknown,

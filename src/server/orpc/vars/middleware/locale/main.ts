@@ -14,7 +14,7 @@ export const localeMiddleware = headersMiddleware.concat(
             executed: context.localeMiddleware.executed,
             locale: context.localeMiddleware.locale,
           },
-        } satisfies LocaleMiddlewareOutputContext as LocaleMiddlewareOutputContext,
+        } satisfies LocaleMiddlewareOutputContext,
       });
 
     const headers = context.headersMiddleware.headers;
@@ -28,7 +28,7 @@ export const localeMiddleware = headersMiddleware.concat(
           executed: true,
           locale: locale,
         },
-      } satisfies LocaleMiddlewareOutputContext as LocaleMiddlewareOutputContext,
+      } satisfies LocaleMiddlewareOutputContext,
     });
   },
 );
