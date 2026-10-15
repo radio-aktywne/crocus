@@ -5,82 +5,356 @@ export type ClientOptions = {
 };
 
 /**
- * OAuth2 JWT Bearer Grant Type Issuer Trusted JSON Web Key
+ * JSONRawMessage represents a json.RawMessage that works well with JSON, SQL, and Swagger.
  */
-export type TrustedOAuth2JwtGrantJsonWebKey = {
-  /**
-   * The "key_id" is key unique identifier (same as kid header in jws/jwt).
-   */
-  kid?: string;
-  /**
-   * The "set" is basically a name for a group(set) of keys. Will be the same as "issuer" in grant.
-   */
-  set?: string;
+export type JsonRawMessage = unknown;
+
+/**
+ * Time duration
+ *
+ * Specify a time duration in milliseconds, seconds, minutes, hours.
+ */
+export type NullDuration = string | null;
+
+/**
+ * StringSliceJSONFormat represents []string{} which is encoded to/from JSON for SQL storage.
+ */
+export type StringSliceJsonFormat = Array<string>;
+
+/**
+ * Contains information on an device verification
+ */
+export type AcceptDeviceUserCodeRequest = {
+  user_code?: string;
 };
 
 /**
- * OAuth2 JWT Bearer Grant Type Issuer Trust Relationships
+ * The request payload used to accept a consent request.
  */
-export type TrustedOAuth2JwtGrantIssuers = Array<TrustedOAuth2JwtGrantIssuer>;
+export type AcceptOAuth2ConsentRequest = {
+  context?: JsonRawMessage;
+  grant_access_token_audience?: StringSliceJsonFormat;
+  grant_scope?: StringSliceJsonFormat;
+  /**
+   * Remember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same
+   * client asks the same user for the same, or a subset of, scope.
+   */
+  remember?: boolean;
+  /**
+   * RememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the
+   * authorization will be remembered indefinitely.
+   */
+  remember_for?: number;
+  session?: AcceptOAuth2ConsentRequestSession;
+};
 
 /**
- * OAuth2 JWT Bearer Grant Type Issuer Trust Relationship
+ * Pass session data to a consent request.
  */
-export type TrustedOAuth2JwtGrantIssuer = {
+export type AcceptOAuth2ConsentRequestSession = {
   /**
-   * The "allow_any_subject" indicates that the issuer is allowed to have any principal as the subject of the JWT.
+   * AccessToken sets session data for the access and refresh token, as well as any future tokens issued by the
+   * refresh grant. Keep in mind that this data will be available to anyone performing OAuth 2.0 Challenge Introspection.
+   * If only your services can perform OAuth 2.0 Challenge Introspection, this is usually fine. But if third parties
+   * can access that endpoint as well, sensitive data from the session might be exposed to them. Use with care!
    */
-  allow_any_subject?: boolean;
+  access_token?: unknown;
   /**
-   * The "created_at" indicates, when grant was created.
+   * IDToken sets session data for the OpenID Connect ID token. Keep in mind that the session'id payloads are readable
+   * by anyone that has access to the ID Challenge. Use with care!
    */
-  created_at?: string;
+  id_token?: unknown;
+};
+
+/**
+ * HandledLoginRequest is the request payload used to accept a login request.
+ */
+export type AcceptOAuth2LoginRequest = {
   /**
-   * The "expires_at" indicates, when grant will expire, so we will reject assertion from "issuer" targeting "subject".
+   * ACR sets the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it
+   * to express that, for example, a user authenticated using two-factor authentication.
    */
-  expires_at?: string;
+  acr?: string;
+  amr?: StringSliceJsonFormat;
+  context?: JsonRawMessage;
+  /**
+   * Extend OAuth2 authentication session lifespan
+   *
+   * If set to `true`, the OAuth2 authentication cookie lifespan is extended. This is for example useful if you want the user to be able to use `prompt=none` continuously.
+   *
+   * This value can only be set to `true` if the user has an authentication, which is the case if the `skip` value is `true`.
+   */
+  extend_session_lifespan?: boolean;
+  /**
+   * ForceSubjectIdentifier forces the "pairwise" user ID of the end-user that authenticated. The "pairwise" user ID refers to the
+   * (Pairwise Identifier Algorithm)[http://openid.net/specs/openid-connect-core-1_0.html#PairwiseAlg] of the OpenID
+   * Connect specification. It allows you to set an obfuscated subject ("user") identifier that is unique to the client.
+   *
+   * Please note that this changes the user ID on endpoint /userinfo and sub claim of the ID Token. It does not change the
+   * sub claim in the OAuth 2.0 Introspection.
+   *
+   * Per default, ORY Hydra handles this value with its own algorithm. In case you want to set this yourself
+   * you can use this field. Please note that setting this field has no effect if `pairwise` is not configured in
+   * ORY Hydra or the OAuth 2.0 Client does not expect a pairwise identifier (set via `subject_type` key in the client's
+   * configuration).
+   *
+   * Please also be aware that ORY Hydra is unable to properly compute this value during authentication. This implies
+   * that you have to compute this value on every authentication process (probably depending on the client ID or some
+   * other unique value).
+   *
+   * If you fail to compute the proper value, then authentication processes which have id_token_hint set might fail.
+   */
+  force_subject_identifier?: string;
+  /**
+   * IdentityProviderSessionID is the session ID of the end-user that authenticated.
+   * If specified, we will use this value to propagate the logout.
+   */
+  identity_provider_session_id?: string;
+  /**
+   * Remember, if set to true, tells Ory Hydra to remember this user by telling the user agent (browser) to store
+   * a cookie with authentication data. If the same user performs another OAuth 2.0 Authorization Request, they
+   * will not be asked to log in again.
+   */
+  remember?: boolean;
+  /**
+   * RememberFor sets how long the authentication should be remembered for in seconds. If set to `0`, the
+   * authorization will be remembered for the duration of the browser session (using a session cookie).
+   */
+  remember_for?: number;
+  /**
+   * Subject is the user ID of the end-user that authenticated.
+   */
+  subject: string;
+};
+
+/**
+ * Create JSON Web Key Set Request Body
+ */
+export type CreateJsonWebKeySet = {
+  /**
+   * JSON Web Key Algorithm
+   *
+   * The algorithm to be used for creating the key. Supports `RS256`, `ES256`, `ES512`, `HS512`, and `HS256`.
+   */
+  alg: string;
+  /**
+   * JSON Web Key ID
+   *
+   * The Key ID of the key to be created.
+   */
+  kid: string;
+  /**
+   * JSON Web Key Use
+   *
+   * The "use" (public key use) parameter identifies the intended use of
+   * the public key. The "use" parameter is employed to indicate whether
+   * a public key is used for encrypting data or verifying the signature
+   * on data. Valid values are "enc" and "sig".
+   */
+  use: string;
+};
+
+/**
+ * Error
+ */
+export type ErrorOAuth2 = {
+  /**
+   * Error
+   */
+  error?: string;
+  /**
+   * Error Debug Information
+   *
+   * Only available in dev mode.
+   */
+  error_debug?: string;
+  /**
+   * Error Description
+   */
+  error_description?: string;
+  /**
+   * Error Hint
+   *
+   * Helps the user identify the error cause.
+   */
+  error_hint?: string;
+  /**
+   * HTTP Status Code
+   */
+  status_code?: number;
+};
+
+export type GenericError = {
+  /**
+   * The status code
+   */
+  code?: number;
+  /**
+   * Debug information
+   *
+   * This field is often not exposed to protect against leaking
+   * sensitive information.
+   */
+  debug?: string;
+  /**
+   * Further error details
+   */
+  details?: unknown;
+  /**
+   * The error ID
+   *
+   * Useful when trying to identify various errors in application logic.
+   */
   id?: string;
   /**
-   * The "issuer" identifies the principal that issued the JWT assertion (same as "iss" claim in JWT).
+   * Error message
+   *
+   * The error's message.
    */
-  issuer?: string;
-  public_key?: TrustedOAuth2JwtGrantJsonWebKey;
+  message: string;
   /**
-   * The "scope" contains list of scope values (as described in Section 3.3 of OAuth 2.0 [RFC6749])
+   * A human-readable reason for the error
    */
-  scope?: Array<string>;
+  reason?: string;
   /**
-   * The "subject" identifies the principal that is the subject of the JWT.
+   * The request ID
+   *
+   * The request ID is often exposed internally in order to trace
+   * errors across service architectures. This is often a UUID.
    */
-  subject?: string;
+  request?: string;
+  /**
+   * The status description
+   */
+  status?: string;
 };
 
 /**
- * Trust OAuth2 JWT Bearer Grant Type Issuer Request Body
+ * The health status of the service.
  */
-export type TrustOAuth2JwtGrantIssuer = {
+export type HealthStatus = {
   /**
-   * The "allow_any_subject" indicates that the issuer is allowed to have any principal as the subject of the JWT.
+   * Status always contains "ok".
    */
-  allow_any_subject?: boolean;
-  /**
-   * The "expires_at" indicates, when grant will expire, so we will reject assertion from "issuer" targeting "subject".
-   */
-  expires_at: string;
-  /**
-   * The "issuer" identifies the principal that issued the JWT assertion (same as "iss" claim in JWT).
-   */
-  issuer: string;
-  jwk: JsonWebKey;
-  /**
-   * The "scope" contains list of scope values (as described in Section 3.3 of OAuth 2.0 [RFC6749])
-   */
-  scope: Array<string>;
-  /**
-   * The "subject" identifies the principal that is the subject of the JWT.
-   */
-  subject?: string;
+  status?: string;
 };
+
+/**
+ * Introspection contains an access token's session data as specified by
+ * [IETF RFC 7662](https://tools.ietf.org/html/rfc7662)
+ */
+export type IntrospectedOAuth2Token = {
+  /**
+   * Active is a boolean indicator of whether or not the presented token
+   * is currently active.  The specifics of a token's "active" state
+   * will vary depending on the implementation of the authorization
+   * server and the information it keeps about its tokens, but a "true"
+   * value return for the "active" property will generally indicate
+   * that a given token has been issued by this authorization server,
+   * has not been revoked by the resource owner, and is within its
+   * given time window of validity (e.g., after its issuance time and
+   * before its expiration time).
+   */
+  active: boolean;
+  /**
+   * Audience contains a list of the token's intended audiences.
+   */
+  aud?: Array<string>;
+  /**
+   * ID is a client identifier for the OAuth 2.0 client that
+   * requested this token.
+   */
+  client_id?: string;
+  /**
+   * Expires at is an integer timestamp, measured in the number of seconds
+   * since January 1 1970 UTC, indicating when this token will expire.
+   */
+  exp?: number;
+  /**
+   * Extra is arbitrary data set by the session.
+   */
+  ext?: {
+    [key: string]: unknown;
+  };
+  /**
+   * Issued at is an integer timestamp, measured in the number of seconds
+   * since January 1 1970 UTC, indicating when this token was
+   * originally issued.
+   */
+  iat?: number;
+  /**
+   * IssuerURL is a string representing the issuer of this token
+   */
+  iss?: string;
+  /**
+   * NotBefore is an integer timestamp, measured in the number of seconds
+   * since January 1 1970 UTC, indicating when this token is not to be
+   * used before.
+   */
+  nbf?: number;
+  /**
+   * ObfuscatedSubject is set when the subject identifier algorithm was set to "pairwise" during authorization.
+   * It is the `sub` value of the ID Token that was issued.
+   */
+  obfuscated_subject?: string;
+  /**
+   * Scope is a JSON string containing a space-separated list of
+   * scopes associated with this token.
+   */
+  scope?: string;
+  /**
+   * Subject of the token, as defined in JWT [RFC7519].
+   * Usually a machine-readable identifier of the resource owner who
+   * authorized this token.
+   */
+  sub?: string;
+  /**
+   * TokenType is the introspected token's type, typically `Bearer`.
+   */
+  token_type?: string;
+  /**
+   * TokenUse is the introspected token's use, for example `access_token` or `refresh_token`.
+   */
+  token_use?: string;
+  /**
+   * Username is a human-readable identifier for the resource owner who
+   * authorized this token.
+   */
+  username?: string;
+};
+
+/**
+ * A JSONPatch document as defined by RFC 6902
+ */
+export type JsonPatch = {
+  /**
+   * This field is used together with operation "move" and uses JSON Pointer notation.
+   *
+   * Learn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).
+   */
+  from?: string;
+  /**
+   * The operation to be performed. One of "add", "remove", "replace", "move", "copy", or "test".
+   */
+  op: string;
+  /**
+   * The path to the target path. Uses JSON pointer notation.
+   *
+   * Learn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).
+   */
+  path: string;
+  /**
+   * The value to be used within the operations.
+   *
+   * Learn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).
+   */
+  value?: unknown;
+};
+
+/**
+ * A JSONPatchDocument request
+ */
+export type JsonPatchDocument = Array<JsonPatch>;
 
 export type JsonWebKey = {
   /**
@@ -143,99 +417,25 @@ export type JsonWebKey = {
 };
 
 /**
- * The request payload used to accept a login or consent request.
+ * JSON Web Key Set
  */
-export type RejectOAuth2Request = {
+export type JsonWebKeySet = {
   /**
-   * The error should follow the OAuth2 error format (e.g. `invalid_request`, `login_required`).
+   * List of JSON Web Keys
    *
-   * Defaults to `request_denied`.
+   * The value of the "keys" parameter is an array of JSON Web Key (JWK)
+   * values. By default, the order of the JWK values within the array does
+   * not imply an order of preference among them, although applications
+   * of JWK Sets can choose to assign a meaning to the order for their
+   * purposes, if desired.
    */
-  error?: string;
-  /**
-   * Debug contains information to help resolve the problem as a developer. Usually not exposed
-   * to the public but only in the server logs.
-   */
-  error_debug?: string;
-  /**
-   * Description of the error in a human readable format.
-   */
-  error_description?: string;
-  /**
-   * Hint to help resolve the error.
-   */
-  error_hint?: string;
-  /**
-   * Represents the HTTP status code of the error (e.g. 401 or 403)
-   *
-   * Defaults to 400
-   */
-  status_code?: number;
-};
-
-/**
- * OAuth 2.0 Redirect Browser To
- *
- * Contains a redirect URL used to complete a login, consent, or logout request.
- */
-export type OAuth2RedirectTo = {
-  /**
-   * RedirectURL is the URL which you should redirect the user's browser to once the authentication process is completed.
-   */
-  redirect_to: string;
-};
-
-/**
- * Contains information about an ongoing logout request.
- */
-export type OAuth2LogoutRequest = {
-  /**
-   * Challenge is the identifier ("logout challenge") of the logout authentication request. It is used to
-   * identify the session.
-   */
-  challenge?: string;
-  client?: OAuth2Client | null;
-  expires_at?: NullTime;
-  /**
-   * RequestURL is the original Logout URL requested.
-   */
-  request_url?: string;
-  requested_at?: NullTime;
-  /**
-   * RPInitiated is set to true if the request was initiated by a Relying Party (RP), also known as an OAuth 2.0 Client.
-   */
-  rp_initiated?: boolean;
-  /**
-   * SessionID is the login session ID that was requested to log out.
-   */
-  sid?: string;
-  /**
-   * Subject is the user for whom the logout was request.
-   */
-  subject?: string;
+  keys?: Array<JsonWebKey>;
 };
 
 /**
  * NullTime implements sql.NullTime functionality.
  */
 export type NullTime = string | null;
-
-/**
- * JSONRawMessage represents a json.RawMessage that works well with JSON, SQL, and Swagger.
- */
-export type JsonRawMessage = unknown;
-
-/**
- * Time duration
- *
- * Specify a time duration in milliseconds, seconds, minutes, hours.
- */
-export type NullDuration = string | null;
-
-/**
- * StringSliceJSONFormat represents []string{} which is encoded to/from JSON for SQL storage.
- */
-export type StringSliceJsonFormat = Array<string>;
 
 /**
  * OAuth 2.0 Client
@@ -248,8 +448,8 @@ export type OAuth2Client = {
    * OAuth 2.0 Access Token Strategy
    *
    * AccessTokenStrategy is the strategy used to generate access tokens.
-   * Valid options are `jwt` and `opaque`. `jwt` is a bad idea, see https://www.ory.sh/docs/hydra/advanced#json-web-tokens
-   * Setting the stragegy here overrides the global setting in `strategies.access_token`.
+   * Valid options are `jwt` and `opaque`. `jwt` is a bad idea, see https://www.ory.sh/docs/oauth2-oidc/jwt-access-token
+   * Setting the strategy here overrides the global setting in `strategies.access_token`.
    */
   access_token_strategy?: string;
   allowed_cors_origins?: StringSliceJsonFormat;
@@ -313,6 +513,9 @@ export type OAuth2Client = {
    * CreatedAt returns the timestamp of the client's creation.
    */
   created_at?: string;
+  device_authorization_grant_access_token_lifespan?: NullDuration;
+  device_authorization_grant_id_token_lifespan?: NullDuration;
+  device_authorization_grant_refresh_token_lifespan?: NullDuration;
   /**
    * OpenID Connect Front-Channel Logout Session Required
    *
@@ -333,18 +536,7 @@ export type OAuth2Client = {
   grant_types?: StringSliceJsonFormat;
   implicit_grant_access_token_lifespan?: NullDuration;
   implicit_grant_id_token_lifespan?: NullDuration;
-  /**
-   * OAuth 2.0 Client JSON Web Key Set
-   *
-   * Client's JSON Web Key Set [JWK] document, passed by value. The semantics of the jwks parameter are the same as
-   * the jwks_uri parameter, other than that the JWK Set is passed by value, rather than by reference. This parameter
-   * is intended only to be used by Clients that, for some reason, are unable to use the jwks_uri parameter, for
-   * instance, by native applications that might not have a location to host the contents of the JWK Set. If a Client
-   * can use jwks_uri, it MUST NOT use jwks. One significant downside of jwks is that it does not enable key rotation
-   * (which jwks_uri does, as described in Section 10 of OpenID Connect Core 1.0 [OpenID.Core]). The jwks_uri and jwks
-   * parameters MUST NOT be used together.
-   */
-  jwks?: unknown;
+  jwks?: JsonWebKeySet;
   /**
    * OAuth 2.0 Client JSON Web Key Set URL
    *
@@ -482,44 +674,78 @@ export type OAuth2Client = {
 };
 
 /**
- * Contains information on an ongoing login request.
+ * OAuth 2.0 Client Token Lifespans
+ *
+ * Lifespans of different token types issued for this OAuth 2.0 Client.
  */
-export type OAuth2LoginRequest = {
+export type OAuth2ClientTokenLifespans = {
+  authorization_code_grant_access_token_lifespan?: NullDuration;
+  authorization_code_grant_id_token_lifespan?: NullDuration;
+  authorization_code_grant_refresh_token_lifespan?: NullDuration;
+  client_credentials_grant_access_token_lifespan?: NullDuration;
+  device_authorization_grant_access_token_lifespan?: NullDuration;
+  device_authorization_grant_id_token_lifespan?: NullDuration;
+  device_authorization_grant_refresh_token_lifespan?: NullDuration;
+  implicit_grant_access_token_lifespan?: NullDuration;
+  implicit_grant_id_token_lifespan?: NullDuration;
+  jwt_bearer_grant_access_token_lifespan?: NullDuration;
+  refresh_token_grant_access_token_lifespan?: NullDuration;
+  refresh_token_grant_id_token_lifespan?: NullDuration;
+  refresh_token_grant_refresh_token_lifespan?: NullDuration;
+};
+
+/**
+ * Contains information on an ongoing consent request.
+ */
+export type OAuth2ConsentRequest = {
   /**
-   * ID is the identifier ("login challenge") of the login request. It is used to
-   * identify the session.
+   * ACR represents the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it
+   * to express that, for example, a user authenticated using two factor authentication.
+   */
+  acr?: string;
+  amr?: StringSliceJsonFormat;
+  /**
+   * Challenge is used to retrieve/accept/deny the consent request.
    */
   challenge: string;
-  client: OAuth2Client;
+  client?: OAuth2Client;
+  /**
+   * ConsentRequestID is the ID of the consent request.
+   */
+  consent_request_id?: string;
+  context?: JsonRawMessage;
+  /**
+   * LoginChallenge is the login challenge this consent challenge belongs to. It can be used to associate
+   * a login and consent request in the login & consent app.
+   */
+  login_challenge?: string;
+  /**
+   * LoginSessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)
+   * this ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)
+   * this will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-
+   * channel logout. It's value can generally be used to associate consecutive login requests by a certain user.
+   */
+  login_session_id?: string;
   oidc_context?: OAuth2ConsentRequestOpenIdConnectContext;
   /**
    * RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which
    * initiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but
    * might come in handy if you want to deal with additional request parameters.
    */
-  request_url: string;
+  request_url?: string;
   requested_access_token_audience?: StringSliceJsonFormat;
   requested_scope?: StringSliceJsonFormat;
   /**
-   * SessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)
-   * this ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)
-   * this will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-
-   * channel logout. It's value can generally be used to associate consecutive login requests by a certain user.
-   */
-  session_id?: string;
-  /**
    * Skip, if true, implies that the client has requested the same scopes from the same user previously.
-   * If true, you can skip asking the user to grant the requested scopes, and simply forward the user to the redirect URL.
-   *
-   * This feature allows you to update / set session information.
+   * If true, you must not ask the user to grant the requested scopes. You must however either allow or deny the
+   * consent request using the usual API call.
    */
-  skip: boolean;
+  skip?: boolean;
   /**
    * Subject is the user ID of the end-user that authenticated. Now, that end user needs to grant or deny the scope
-   * requested by the OAuth 2.0 client. If this value is set and `skip` is true, you MUST include this subject type
-   * when accepting the login request, or the request will fail.
+   * requested by the OAuth 2.0 client.
    */
-  subject: string;
+  subject?: string;
 };
 
 /**
@@ -574,94 +800,17 @@ export type OAuth2ConsentRequestOpenIdConnectContext = {
 };
 
 /**
- * List of OAuth 2.0 Consent Sessions
- */
-export type OAuth2ConsentSessions = Array<OAuth2ConsentSession>;
-
-/**
- * Pass session data to a consent request.
- */
-export type AcceptOAuth2ConsentRequestSession = {
-  /**
-   * AccessToken sets session data for the access and refresh token, as well as any future tokens issued by the
-   * refresh grant. Keep in mind that this data will be available to anyone performing OAuth 2.0 Challenge Introspection.
-   * If only your services can perform OAuth 2.0 Challenge Introspection, this is usually fine. But if third parties
-   * can access that endpoint as well, sensitive data from the session might be exposed to them. Use with care!
-   */
-  access_token?: unknown;
-  /**
-   * IDToken sets session data for the OpenID Connect ID token. Keep in mind that the session'id payloads are readable
-   * by anyone that has access to the ID Challenge. Use with care!
-   */
-  id_token?: unknown;
-};
-
-/**
- * Contains information on an ongoing consent request.
- */
-export type OAuth2ConsentRequest = {
-  /**
-   * ACR represents the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it
-   * to express that, for example, a user authenticated using two factor authentication.
-   */
-  acr?: string;
-  amr?: StringSliceJsonFormat;
-  /**
-   * ID is the identifier ("authorization challenge") of the consent authorization request. It is used to
-   * identify the session.
-   */
-  challenge: string;
-  client?: OAuth2Client;
-  context?: JsonRawMessage;
-  /**
-   * LoginChallenge is the login challenge this consent challenge belongs to. It can be used to associate
-   * a login and consent request in the login & consent app.
-   */
-  login_challenge?: string;
-  /**
-   * LoginSessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)
-   * this ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)
-   * this will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-
-   * channel logout. It's value can generally be used to associate consecutive login requests by a certain user.
-   */
-  login_session_id?: string;
-  oidc_context?: OAuth2ConsentRequestOpenIdConnectContext;
-  /**
-   * RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which
-   * initiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but
-   * might come in handy if you want to deal with additional request parameters.
-   */
-  request_url?: string;
-  requested_access_token_audience?: StringSliceJsonFormat;
-  requested_scope?: StringSliceJsonFormat;
-  /**
-   * Skip, if true, implies that the client has requested the same scopes from the same user previously.
-   * If true, you must not ask the user to grant the requested scopes. You must however either allow or deny the
-   * consent request using the usual API call.
-   */
-  skip?: boolean;
-  /**
-   * Subject is the user ID of the end-user that authenticated. Now, that end user needs to grant or deny the scope
-   * requested by the OAuth 2.0 client.
-   */
-  subject?: string;
-};
-
-/**
  * OAuth 2.0 Consent Session
  *
  * A completed OAuth 2.0 Consent Session.
  */
 export type OAuth2ConsentSession = {
   consent_request?: OAuth2ConsentRequest;
+  /**
+   * ConsentRequestID is the identifier of the consent request that initiated this consent session.
+   */
+  consent_request_id?: string;
   context?: JsonRawMessage;
-  expires_at?: {
-    access_token?: string;
-    authorize_code?: string;
-    id_token?: string;
-    par_context?: string;
-    refresh_token?: string;
-  };
   grant_access_token_audience?: StringSliceJsonFormat;
   grant_scope?: StringSliceJsonFormat;
   handled_at?: NullTime;
@@ -683,348 +832,198 @@ export type OAuth2ConsentSession = {
 };
 
 /**
- * OAuth 2.0 Client Token Lifespans
- *
- * Lifespans of different token types issued for this OAuth 2.0 Client.
+ * List of OAuth 2.0 Consent Sessions
  */
-export type OAuth2ClientTokenLifespans = {
-  authorization_code_grant_access_token_lifespan?: NullDuration;
-  authorization_code_grant_id_token_lifespan?: NullDuration;
-  authorization_code_grant_refresh_token_lifespan?: NullDuration;
-  client_credentials_grant_access_token_lifespan?: NullDuration;
-  implicit_grant_access_token_lifespan?: NullDuration;
-  implicit_grant_id_token_lifespan?: NullDuration;
-  jwt_bearer_grant_access_token_lifespan?: NullDuration;
-  refresh_token_grant_access_token_lifespan?: NullDuration;
-  refresh_token_grant_id_token_lifespan?: NullDuration;
-  refresh_token_grant_refresh_token_lifespan?: NullDuration;
-};
+export type OAuth2ConsentSessions = Array<OAuth2ConsentSession>;
 
 /**
- * JSON Web Key Set
+ * Contains information on an ongoing login request.
  */
-export type JsonWebKeySet = {
+export type OAuth2LoginRequest = {
   /**
-   * List of JSON Web Keys
+   * ID is the identifier of the login request.
+   */
+  challenge: string;
+  client: OAuth2Client;
+  oidc_context?: OAuth2ConsentRequestOpenIdConnectContext;
+  /**
+   * RequestURL is the original OAuth 2.0 Authorization URL requested by the OAuth 2.0 client. It is the URL which
+   * initiates the OAuth 2.0 Authorization Code or OAuth 2.0 Implicit flow. This URL is typically not needed, but
+   * might come in handy if you want to deal with additional request parameters.
+   */
+  request_url: string;
+  requested_access_token_audience?: StringSliceJsonFormat;
+  requested_scope?: StringSliceJsonFormat;
+  /**
+   * SessionID is the login session ID. If the user-agent reuses a login session (via cookie / remember flag)
+   * this ID will remain the same. If the user-agent did not have an existing authentication session (e.g. remember is false)
+   * this will be a new random value. This value is used as the "sid" parameter in the ID Token and in OIDC Front-/Back-
+   * channel logout. It's value can generally be used to associate consecutive login requests by a certain user.
+   */
+  session_id?: string;
+  /**
+   * Skip, if true, implies that the client has requested the same scopes from the same user previously.
+   * If true, you can skip asking the user to grant the requested scopes, and simply forward the user to the redirect URL.
    *
-   * The value of the "keys" parameter is an array of JSON Web Key (JWK)
-   * values. By default, the order of the JWK values within the array does
-   * not imply an order of preference among them, although applications
-   * of JWK Sets can choose to assign a meaning to the order for their
-   * purposes, if desired.
+   * This feature allows you to update / set session information.
    */
-  keys?: Array<JsonWebKey>;
-};
-
-/**
- * A JSONPatchDocument request
- */
-export type JsonPatchDocument = Array<JsonPatch>;
-
-/**
- * A JSONPatch document as defined by RFC 6902
- */
-export type JsonPatch = {
+  skip: boolean;
   /**
-   * This field is used together with operation "move" and uses JSON Pointer notation.
-   *
-   * Learn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).
-   */
-  from?: string;
-  /**
-   * The operation to be performed. One of "add", "remove", "replace", "move", "copy", or "test".
-   */
-  op: string;
-  /**
-   * The path to the target path. Uses JSON pointer notation.
-   *
-   * Learn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).
-   */
-  path: string;
-  /**
-   * The value to be used within the operations.
-   *
-   * Learn more [about JSON Pointers](https://datatracker.ietf.org/doc/html/rfc6901#section-5).
-   */
-  value?: unknown;
-};
-
-/**
- * Introspection contains an access token's session data as specified by
- * [IETF RFC 7662](https://tools.ietf.org/html/rfc7662)
- */
-export type IntrospectedOAuth2Token = {
-  /**
-   * Active is a boolean indicator of whether or not the presented token
-   * is currently active.  The specifics of a token's "active" state
-   * will vary depending on the implementation of the authorization
-   * server and the information it keeps about its tokens, but a "true"
-   * value return for the "active" property will generally indicate
-   * that a given token has been issued by this authorization server,
-   * has not been revoked by the resource owner, and is within its
-   * given time window of validity (e.g., after its issuance time and
-   * before its expiration time).
-   */
-  active: boolean;
-  /**
-   * Audience contains a list of the token's intended audiences.
-   */
-  aud?: Array<string>;
-  /**
-   * ID is aclient identifier for the OAuth 2.0 client that
-   * requested this token.
-   */
-  client_id?: string;
-  /**
-   * Expires at is an integer timestamp, measured in the number of seconds
-   * since January 1 1970 UTC, indicating when this token will expire.
-   */
-  exp?: number;
-  /**
-   * Extra is arbitrary data set by the session.
-   */
-  ext?: {
-    [key: string]: unknown;
-  };
-  /**
-   * Issued at is an integer timestamp, measured in the number of seconds
-   * since January 1 1970 UTC, indicating when this token was
-   * originally issued.
-   */
-  iat?: number;
-  /**
-   * IssuerURL is a string representing the issuer of this token
-   */
-  iss?: string;
-  /**
-   * NotBefore is an integer timestamp, measured in the number of seconds
-   * since January 1 1970 UTC, indicating when this token is not to be
-   * used before.
-   */
-  nbf?: number;
-  /**
-   * ObfuscatedSubject is set when the subject identifier algorithm was set to "pairwise" during authorization.
-   * It is the `sub` value of the ID Token that was issued.
-   */
-  obfuscated_subject?: string;
-  /**
-   * Scope is a JSON string containing a space-separated list of
-   * scopes associated with this token.
-   */
-  scope?: string;
-  /**
-   * Subject of the token, as defined in JWT [RFC7519].
-   * Usually a machine-readable identifier of the resource owner who
-   * authorized this token.
-   */
-  sub?: string;
-  /**
-   * TokenType is the introspected token's type, typically `Bearer`.
-   */
-  token_type?: string;
-  /**
-   * TokenUse is the introspected token's use, for example `access_token` or `refresh_token`.
-   */
-  token_use?: string;
-  /**
-   * Username is a human-readable identifier for the resource owner who
-   * authorized this token.
-   */
-  username?: string;
-};
-
-/**
- * The health status of the service.
- */
-export type HealthStatus = {
-  /**
-   * Status always contains "ok".
-   */
-  status?: string;
-};
-
-export type GenericError = {
-  /**
-   * The status code
-   */
-  code?: number;
-  /**
-   * Debug information
-   *
-   * This field is often not exposed to protect against leaking
-   * sensitive information.
-   */
-  debug?: string;
-  /**
-   * Further error details
-   */
-  details?: unknown;
-  /**
-   * The error ID
-   *
-   * Useful when trying to identify various errors in application logic.
-   */
-  id?: string;
-  /**
-   * Error message
-   *
-   * The error's message.
-   */
-  message: string;
-  /**
-   * A human-readable reason for the error
-   */
-  reason?: string;
-  /**
-   * The request ID
-   *
-   * The request ID is often exposed internally in order to trace
-   * errors across service architectures. This is often a UUID.
-   */
-  request?: string;
-  /**
-   * The status description
-   */
-  status?: string;
-};
-
-/**
- * Error
- */
-export type ErrorOAuth2 = {
-  /**
-   * Error
-   */
-  error?: string;
-  /**
-   * Error Debug Information
-   *
-   * Only available in dev mode.
-   */
-  error_debug?: string;
-  /**
-   * Error Description
-   */
-  error_description?: string;
-  /**
-   * Error Hint
-   *
-   * Helps the user identify the error cause.
-   */
-  error_hint?: string;
-  /**
-   * HTTP Status Code
-   */
-  status_code?: number;
-};
-
-/**
- * Create JSON Web Key Set Request Body
- */
-export type CreateJsonWebKeySet = {
-  /**
-   * JSON Web Key Algorithm
-   *
-   * The algorithm to be used for creating the key. Supports `RS256`, `ES256`, `ES512`, `HS512`, and `HS256`.
-   */
-  alg: string;
-  /**
-   * JSON Web Key ID
-   *
-   * The Key ID of the key to be created.
-   */
-  kid: string;
-  /**
-   * JSON Web Key Use
-   *
-   * The "use" (public key use) parameter identifies the intended use of
-   * the public key. The "use" parameter is employed to indicate whether
-   * a public key is used for encrypting data or verifying the signature
-   * on data. Valid values are "enc" and "sig".
-   */
-  use: string;
-};
-
-/**
- * HandledLoginRequest is the request payload used to accept a login request.
- */
-export type AcceptOAuth2LoginRequest = {
-  /**
-   * ACR sets the Authentication AuthorizationContext Class Reference value for this authentication session. You can use it
-   * to express that, for example, a user authenticated using two factor authentication.
-   */
-  acr?: string;
-  amr?: StringSliceJsonFormat;
-  context?: JsonRawMessage;
-  /**
-   * Extend OAuth2 authentication session lifespan
-   *
-   * If set to `true`, the OAuth2 authentication cookie lifespan is extended. This is for example useful if you want the user to be able to use `prompt=none` continuously.
-   *
-   * This value can only be set to `true` if the user has an authentication, which is the case if the `skip` value is `true`.
-   */
-  extend_session_lifespan?: boolean;
-  /**
-   * ForceSubjectIdentifier forces the "pairwise" user ID of the end-user that authenticated. The "pairwise" user ID refers to the
-   * (Pairwise Identifier Algorithm)[http://openid.net/specs/openid-connect-core-1_0.html#PairwiseAlg] of the OpenID
-   * Connect specification. It allows you to set an obfuscated subject ("user") identifier that is unique to the client.
-   *
-   * Please note that this changes the user ID on endpoint /userinfo and sub claim of the ID Token. It does not change the
-   * sub claim in the OAuth 2.0 Introspection.
-   *
-   * Per default, ORY Hydra handles this value with its own algorithm. In case you want to set this yourself
-   * you can use this field. Please note that setting this field has no effect if `pairwise` is not configured in
-   * ORY Hydra or the OAuth 2.0 Client does not expect a pairwise identifier (set via `subject_type` key in the client's
-   * configuration).
-   *
-   * Please also be aware that ORY Hydra is unable to properly compute this value during authentication. This implies
-   * that you have to compute this value on every authentication process (probably depending on the client ID or some
-   * other unique value).
-   *
-   * If you fail to compute the proper value, then authentication processes which have id_token_hint set might fail.
-   */
-  force_subject_identifier?: string;
-  /**
-   * IdentityProviderSessionID is the session ID of the end-user that authenticated.
-   * If specified, we will use this value to propagate the logout.
-   */
-  identity_provider_session_id?: string;
-  /**
-   * Remember, if set to true, tells ORY Hydra to remember this user by telling the user agent (browser) to store
-   * a cookie with authentication data. If the same user performs another OAuth 2.0 Authorization Request, he/she
-   * will not be asked to log in again.
-   */
-  remember?: boolean;
-  /**
-   * RememberFor sets how long the authentication should be remembered for in seconds. If set to `0`, the
-   * authorization will be remembered for the duration of the browser session (using a session cookie).
-   */
-  remember_for?: number;
-  /**
-   * Subject is the user ID of the end-user that authenticated.
+   * Subject is the user ID of the end-user that authenticated. Now, that end user needs to grant or deny the scope
+   * requested by the OAuth 2.0 client. If this value is set and `skip` is true, you MUST include this subject type
+   * when accepting the login request, or the request will fail.
    */
   subject: string;
 };
 
 /**
- * The request payload used to accept a consent request.
+ * Contains information about an ongoing logout request.
  */
-export type AcceptOAuth2ConsentRequest = {
-  context?: JsonRawMessage;
-  grant_access_token_audience?: StringSliceJsonFormat;
-  grant_scope?: StringSliceJsonFormat;
-  handled_at?: NullTime;
+export type OAuth2LogoutRequest = {
   /**
-   * Remember, if set to true, tells ORY Hydra to remember this consent authorization and reuse it if the same
-   * client asks the same user for the same, or a subset of, scope.
+   * Challenge is the identifier of the logout authentication request.
    */
-  remember?: boolean;
+  challenge?: string;
+  client?: OAuth2Client | null;
+  expires_at?: NullTime;
   /**
-   * RememberFor sets how long the consent authorization should be remembered for in seconds. If set to `0`, the
-   * authorization will be remembered indefinitely.
+   * RequestURL is the original Logout URL requested.
    */
-  remember_for?: number;
-  session?: AcceptOAuth2ConsentRequestSession;
+  request_url?: string;
+  requested_at?: NullTime;
+  /**
+   * RPInitiated is set to true if the request was initiated by a Relying Party (RP), also known as an OAuth 2.0 Client.
+   */
+  rp_initiated?: boolean;
+  /**
+   * SessionID is the login session ID that was requested to log out.
+   */
+  sid?: string;
+  /**
+   * Subject is the user for whom the logout was request.
+   */
+  subject?: string;
+};
+
+/**
+ * OAuth 2.0 Redirect Browser To
+ *
+ * Contains a redirect URL used to complete a login, consent, or logout request.
+ */
+export type OAuth2RedirectTo = {
+  /**
+   * RedirectURL is the URL which you should redirect the user's browser to once the authentication process is completed.
+   */
+  redirect_to: string;
+};
+
+/**
+ * The request payload used to accept a login or consent request.
+ */
+export type RejectOAuth2Request = {
+  /**
+   * The error should follow the OAuth2 error format (e.g. `invalid_request`, `login_required`).
+   *
+   * Defaults to `request_denied`.
+   */
+  error?: string;
+  /**
+   * Debug contains information to help resolve the problem as a developer. Usually not exposed
+   * to the public but only in the server logs.
+   */
+  error_debug?: string;
+  /**
+   * Description of the error in a human readable format.
+   */
+  error_description?: string;
+  /**
+   * Hint to help resolve the error.
+   */
+  error_hint?: string;
+  /**
+   * Represents the HTTP status code of the error (e.g. 401 or 403)
+   *
+   * Defaults to 400
+   */
+  status_code?: number;
+};
+
+/**
+ * Trust OAuth2 JWT Bearer Grant Type Issuer Request Body
+ */
+export type TrustOAuth2JwtGrantIssuer = {
+  /**
+   * The "allow_any_subject" indicates that the issuer is allowed to have any principal as the subject of the JWT.
+   */
+  allow_any_subject?: boolean;
+  /**
+   * The "expires_at" indicates, when grant will expire, so we will reject assertion from "issuer" targeting "subject".
+   */
+  expires_at: string;
+  /**
+   * The "issuer" identifies the principal that issued the JWT assertion (same as "iss" claim in JWT).
+   */
+  issuer: string;
+  jwk: JsonWebKey;
+  /**
+   * The "scope" contains list of scope values (as described in Section 3.3 of OAuth 2.0 [RFC6749])
+   */
+  scope: Array<string>;
+  /**
+   * The "subject" identifies the principal that is the subject of the JWT.
+   */
+  subject?: string;
+};
+
+/**
+ * OAuth2 JWT Bearer Grant Type Issuer Trust Relationship
+ */
+export type TrustedOAuth2JwtGrantIssuer = {
+  /**
+   * The "allow_any_subject" indicates that the issuer is allowed to have any principal as the subject of the JWT.
+   */
+  allow_any_subject?: boolean;
+  /**
+   * The "created_at" indicates, when grant was created.
+   */
+  created_at?: string;
+  /**
+   * The "expires_at" indicates, when grant will expire, so we will reject assertion from "issuer" targeting "subject".
+   */
+  expires_at?: string;
+  id?: string;
+  /**
+   * The "issuer" identifies the principal that issued the JWT assertion (same as "iss" claim in JWT).
+   */
+  issuer?: string;
+  public_key?: TrustedOAuth2JwtGrantJsonWebKey;
+  /**
+   * The "scope" contains list of scope values (as described in Section 3.3 of OAuth 2.0 [RFC6749])
+   */
+  scope?: Array<string>;
+  /**
+   * The "subject" identifies the principal that is the subject of the JWT.
+   */
+  subject?: string;
+};
+
+/**
+ * OAuth2 JWT Bearer Grant Type Issuer Trust Relationships
+ */
+export type TrustedOAuth2JwtGrantIssuers = Array<TrustedOAuth2JwtGrantIssuer>;
+
+/**
+ * OAuth2 JWT Bearer Grant Type Issuer Trusted JSON Web Key
+ */
+export type TrustedOAuth2JwtGrantJsonWebKey = {
+  /**
+   * The "key_id" is key unique identifier (same as kid header in jws/jwt).
+   */
+  kid?: string;
+  /**
+   * The "set" is basically a name for a group(set) of keys. Will be the same as "issuer" in grant.
+   */
+  set?: string;
 };
 
 export type ListOAuth2ClientsRequest = {
@@ -1626,6 +1625,35 @@ export type RejectOAuth2ConsentRequestResponses = {
 export type RejectOAuth2ConsentRequestResponse =
   RejectOAuth2ConsentRequestResponses[keyof RejectOAuth2ConsentRequestResponses];
 
+export type AcceptUserCodeRequestRequest = {
+  body?: AcceptDeviceUserCodeRequest;
+  path?: never;
+  query: {
+    device_challenge: string;
+  };
+  url: "/admin/oauth2/auth/requests/device/accept";
+};
+
+export type AcceptUserCodeRequestErrors = {
+  /**
+   * errorOAuth2
+   */
+  default: ErrorOAuth2;
+};
+
+export type AcceptUserCodeRequestError =
+  AcceptUserCodeRequestErrors[keyof AcceptUserCodeRequestErrors];
+
+export type AcceptUserCodeRequestResponses = {
+  /**
+   * oAuth2RedirectTo
+   */
+  200: OAuth2RedirectTo;
+};
+
+export type AcceptUserCodeRequestResponse =
+  AcceptUserCodeRequestResponses[keyof AcceptUserCodeRequestResponses];
+
 export type GetOAuth2LoginRequestRequest = {
   body?: never;
   path?: never;
@@ -1824,19 +1852,25 @@ export type RejectOAuth2LogoutRequestResponse =
 export type RevokeOAuth2ConsentSessionsRequest = {
   body?: never;
   path?: never;
-  query: {
+  query?: {
     /**
      * OAuth 2.0 Consent Subject
      *
      * The subject whose consent sessions should be deleted.
      */
-    subject: string;
+    subject?: string;
     /**
      * OAuth 2.0 Client ID
      *
      * If set, deletes only those consent sessions that have been granted to the specified OAuth 2.0 Client ID.
      */
     client?: string;
+    /**
+     * Consent Request ID
+     *
+     * If set, revoke all token chains derived from this particular consent request ID.
+     */
+    consent_request_id?: string;
     /**
      * Revoke All Consent Sessions
      *
@@ -2036,8 +2070,20 @@ export type ListTrustedOAuth2JwtGrantIssuersRequest = {
   body?: never;
   path?: never;
   query?: {
-    MaxItems?: number;
-    DefaultItems?: number;
+    /**
+     * Items per Page
+     *
+     * This is the number of items per page to return.
+     * For details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).
+     */
+    page_size?: number;
+    /**
+     * Next Page Token
+     *
+     * The next page token.
+     * For details on pagination please head over to the [pagination documentation](https://www.ory.sh/docs/ecosystem/api-design#pagination).
+     */
+    page_token?: string;
     /**
      * If optional "issuer" is supplied, only jwt-bearer grants with this issuer will be returned.
      */
