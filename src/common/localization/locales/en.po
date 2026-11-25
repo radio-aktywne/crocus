@@ -17,7 +17,6 @@ msgstr ""
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
 
-#: src/app/(root)/(main)/default/page.tsx:20
 #: src/app/(root)/layout.tsx:41
 msgid "crocus"
 msgstr "crocus"

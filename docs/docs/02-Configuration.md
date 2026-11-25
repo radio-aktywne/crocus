@@ -55,3 +55,15 @@ You can configure the app at runtime using various environment variables:
 - `CROCUS__URLS__ORCHID__SCHEME` -
   scheme of the public URL of the orchid app
   (default: `http`)
+- `CROCUS__URLS__SCORPION__HOST` -
+  host of the public URL of the scorpion service
+  (default: `localhost`)
+- `CROCUS__URLS__SCORPION__PATH` -
+  path of the public URL of the scorpion service
+  (default: ``)
+- `CROCUS__URLS__SCORPION__PORT` -
+  port of the public URL of the scorpion service
+  (default: `20000`)
+- `CROCUS__URLS__SCORPION__SCHEME` -
+  scheme of the public URL of the scorpion service
+  (default: `http`)

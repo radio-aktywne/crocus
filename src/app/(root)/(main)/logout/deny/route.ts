@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 
+import { trimEnd } from "es-toolkit/string";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
 
@@ -56,5 +57,12 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
     if (error) redirect(createErrorUrl().url);
   })();
 
-  redirect(createUrl({ path: "/default" }).url);
+  redirect(
+    createUrl({
+      host: state.current.config.urls.orchid.host,
+      path: `${trimEnd(state.current.config.urls.orchid.path ?? "", "/")}/default`,
+      port: state.current.config.urls.orchid.port,
+      scheme: state.current.config.urls.orchid.scheme,
+    }).url,
+  );
 }
