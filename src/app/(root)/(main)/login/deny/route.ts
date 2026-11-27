@@ -9,6 +9,7 @@ import type { Keys } from "./types";
 import { AuthError } from "../../../../../server/auth/errors";
 import { decryptLoginDenyResponse } from "../../../../../server/auth/lib/decrypt-login-deny-response";
 import { createErrorUrl } from "../../../../../server/core/lib/flow/create-error-url";
+import { localizedRedirect } from "../../../../../server/routing/lib/localized-redirect";
 import { state } from "../../../../../server/state/vars/state";
 import { Schemas } from "./schemas";
 
@@ -25,7 +26,8 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
     try {
       return await decryptLoginDenyResponse({ data: token });
     } catch (error) {
-      if (error instanceof AuthError) redirect(createErrorUrl().url);
+      if (error instanceof AuthError)
+        return await localizedRedirect({ href: createErrorUrl().url });
       throw error;
     }
   })();
@@ -39,7 +41,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
       });
 
     if (error && "redirect_to" in error) redirect(error.redirect_to);
-    if (error) redirect(createErrorUrl().url);
+    if (error) return await localizedRedirect({ href: createErrorUrl().url });
 
     return { loginRequest: data };
   })();
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
         },
       });
 
-    if (error) redirect(createErrorUrl().url);
+    if (error) return await localizedRedirect({ href: createErrorUrl().url });
 
     return { redirectUrl: data.redirect_to };
   })();

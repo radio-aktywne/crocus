@@ -8,6 +8,7 @@ import type { Keys } from "./types";
 
 import { encryptLogoutRequest } from "../../../../server/auth/lib/encrypt-logout-request";
 import { createErrorUrl } from "../../../../server/core/lib/flow/create-error-url";
+import { localizedRedirect } from "../../../../server/routing/lib/localized-redirect";
 import { state } from "../../../../server/state/vars/state";
 import { Schemas } from "./schemas";
 import { createLogoutUrl } from "./utils";
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
       });
 
     if (error && "redirect_to" in error) redirect(error.redirect_to);
-    if (error) redirect(createErrorUrl().url);
+    if (error) return await localizedRedirect({ href: createErrorUrl().url });
 
     return { logoutRequest: data };
   })();

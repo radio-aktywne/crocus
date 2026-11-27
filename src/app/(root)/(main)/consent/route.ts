@@ -8,6 +8,7 @@ import type { Keys } from "./types";
 
 import { createErrorUrl } from "../../../../server/core/lib/flow/create-error-url";
 import { createIdToken } from "../../../../server/core/lib/flow/create-id-token";
+import { localizedRedirect } from "../../../../server/routing/lib/localized-redirect";
 import { state } from "../../../../server/state/vars/state";
 import { constants } from "./constants";
 import { Schemas } from "./schemas";
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
       });
 
     if (error && "redirect_to" in error) redirect(error.redirect_to);
-    if (error) redirect(createErrorUrl().url);
+    if (error) return await localizedRedirect({ href: createErrorUrl().url });
 
     return { consentRequest: data };
   })();
@@ -59,7 +60,7 @@ export async function GET(request: NextRequest, {}: RouteInput<Keys.Path>) {
         },
       });
 
-    if (error) redirect(createErrorUrl().url);
+    if (error) return await localizedRedirect({ href: createErrorUrl().url });
 
     return { redirectUrl: data.redirect_to };
   })();

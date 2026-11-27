@@ -1,7 +1,7 @@
+import { example } from "./vars/example";
 import { localization } from "./vars/localization";
-import { test } from "./vars/test";
 
 export const orpcProcedures = {
+  example: example,
   localization: localization,
-  test: test,
 };
