@@ -13,15 +13,59 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/client/test/components/test-widget/main.tsx:50
+#: src/common/routing/constants.ts:5
+msgid "/"
+msgstr "/"
+
+#: src/common/routing/constants.ts:6
+msgid "/consent"
+msgstr "/consent"
+
+#: src/common/routing/constants.ts:7
+msgid "/error"
+msgstr "/error"
+
+#: src/common/routing/constants.ts:8
+msgid "/login"
+msgstr "/login"
+
+#: src/common/routing/constants.ts:9
+msgid "/login/accept"
+msgstr "/login/accept"
+
+#: src/common/routing/constants.ts:10
+msgid "/login/deny"
+msgstr "/login/deny"
+
+#: src/common/routing/constants.ts:11
+msgid "/logout"
+msgstr "/logout"
+
+#: src/common/routing/constants.ts:12
+msgid "/logout/accept"
+msgstr "/logout/accept"
+
+#: src/common/routing/constants.ts:13
+msgid "/logout/callback"
+msgstr "/logout/callback"
+
+#: src/common/routing/constants.ts:14
+msgid "/logout/deny"
+msgstr "/logout/deny"
+
+#: src/common/routing/constants.ts:15
+msgid "/logout/init"
+msgstr "/logout/init"
+
+#: src/client/example/components/example-widget/main.tsx:50
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
 
-#: src/app/(root)/layout.tsx:41
+#: src/app/(root)/layout.tsx:43
 msgid "crocus"
 msgstr "crocus"
 
-#: src/client/test/components/test-widget/components/test-form/main.tsx:30
+#: src/client/example/components/example-widget/components/example-form/main.tsx:34
 msgid "Enter some value"
 msgstr "Enter some value"
 
@@ -42,8 +86,8 @@ msgstr "Error in OIDC flow"
 msgid "Info"
 msgstr "Info"
 
-#: src/client/test/components/test-widget/main.tsx:39
-#: src/client/test/components/test-widget/main.tsx:60
+#: src/client/example/components/example-widget/main.tsx:39
+#: src/client/example/components/example-widget/main.tsx:60
 msgid "Invalid input"
 msgstr "Invalid input"
 
@@ -63,7 +107,7 @@ msgstr "Retry"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/client/test/components/test-widget/components/test-form/main.tsx:36
+#: src/client/example/components/example-widget/components/example-form/main.tsx:40
 msgid "Submit"
 msgstr "Submit"
 
@@ -71,7 +115,7 @@ msgstr "Submit"
 msgid "Success"
 msgstr "Success"
 
-#: src/app/(root)/layout.tsx:35
+#: src/app/(root)/layout.tsx:37
 msgid "Users OIDC auth app 🪪"
 msgstr "Users OIDC auth app 🪪"
 
@@ -79,6 +123,6 @@ msgstr "Users OIDC auth app 🪪"
 msgid "Warning"
 msgstr "Warning"
 
-#: src/server/orpc/vars/procedures/vars/test/vars/validate/main.ts:27
+#: src/server/orpc/vars/procedures/vars/example/vars/validate/main.ts:27
 msgid "Why did the chicken cross the road? To get to the other side."
 msgstr "Why did the chicken cross the road? To get to the other side."
